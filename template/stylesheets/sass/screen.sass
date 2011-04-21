@@ -1,0 +1,233 @@
+// BASELINE TEMPLATE
+@import url('core/typography.css')
+
+@mixin clearfix
+  zoom: 1
+  &:after
+    clear: both
+    content: " "
+    display: block
+    font-size: 0
+    line-height: 0
+    height: 0
+    visibility: hidden
+    position: relative
+.clearfix
+  @include clearfix
+
+//  CSS3 BORDER RADIUS
+//  +border_radius(none)
+
+@mixin border_radius($value)
+  -moz-border-radius: $value
+  -webkit-border-radius: $value
+  border-radius: $value
+  -moz-background-clip: padding-box
+  -webkit-background-clip: padding-box
+  background-clip: padding-box
+
+@mixin border_radius_top_left($value)
+  -moz-border-radius-topleft: $value
+  -webkit-border-top-left-radius: $value
+  border-top-left-radius: $value
+  -moz-background-clip: padding-box
+  -webkit-background-clip: padding-box
+  background-clip: padding-box
+
+@mixin border_radius_top_right($value)
+  -moz-border-radius-topright: $value
+  -webkit-border-top-right-radius: $value
+  border-top-right-radius: $value
+  -moz-background-clip: padding-box
+  -webkit-background-clip: padding-box
+  background-clip: padding-box
+
+@mixin border_radius_bottom_left($value)
+  -moz-border-radius-bottomleft: $value
+  -webkit-border-bottom-left-radius: $value
+  border-bottom-left-radius: $value
+  -moz-background-clip: padding-box
+  -webkit-background-clip: padding-box
+  background-clip: padding-box
+
+@mixin border_radius_bottom_right($value)
+  -moz-border-radius-bottomright: $value
+  -webkit-border-bottom-right-radius: $value
+  border-bottom-right-radius: $value
+  -moz-background-clip: padding-box
+  -webkit-background-clip: padding-box
+  background-clip: padding-box
+
+//  BOX SHADOW
+//  +reset_shadow
+@mixin box_shadow($color, $x, $y, $blur)
+  -moz-box-shadow: $color $x $y $blur
+  -webkit-box-shadow: $color $x $y $blur
+  box-shadow: $color $x $y $blur
+
+//  OPACITY
+//  +reset_opacity
+@mixin opacity($standard)
+  -moz-opacity: $standard
+  opacity: $standard
+  zoom: 1
+
+// GRADIENTS
+// 6 character hex required (3 character shorthand will break IE. Eg: #eee = bad, #eeeeee = good.)
+@mixin gradient($top_color, $bottom_color)
+  background: $top_color
+  filter: unquote("progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$top_color}', endColorstr='#{$bottom_color}')")
+  background: -webkit-gradient(linear, unquote("left top"), unquote("left bottom"), from($top_color), to($bottom_color))
+  background: -moz-linear-gradient(top, $top_color, $bottom_color)
+
+
+
+// ######## GRID
+// column count should be a highly composite number (6, 12, 24, 36, 48, 60...)
+$grid_columns: 12
+
+// compute width of 1 column
+$grid_col_width: (100% / $grid_columns)
+
+// allow an element to span N columns
+@mixin colspan($n: 1)
+  width: ($n * $grid_col_width)
+
+// create a COLUMN spanning N columns
+@mixin col($n: 1)
+  float: left
+  @include colspan($n)
+
+// prepend N empty columns
+@mixin prepend($n: 1)
+  margin-left: ($grid_col_width * $n)
+
+// append N empty columns
+@mixin append($n: 1)
+  margin-right: ($grid_col_width * $n)
+
+
+
+
+
+
+
+
+
+html, body
+  margin: 0
+  padding: 0
+
+body
+  background: #fff
+  color: #222
+  font: 13px / 1.231 "Calibri", "Lucida Grande", sans-serif
+  *font-size: small
+  // IE6+IE7 hack to preserve specificity
+
+a
+  text-decoration: none
+  font-weight: bold
+  &:link
+    color: #0f6def
+  &:visited
+    color: #0077cc
+  &:hover, &:focus
+    color: #0099ff
+    text-decoration: underline
+  &:active
+    color: #e55117
+
+h1, h2, h3, h4, h5, h6, dt, legend
+  font-family: 'Aller', 'Calibri', sans-serif
+  color: #181818
+
+article
+  @include clearfix
+  padding-bottom: 40px
+
+#header_primary
+  position: relative
+  padding: 120px 0 40px
+  margin-bottom: 40px
+  &:before
+    display: block
+    content: '.'
+    text-indent: -9999em
+    position: absolute
+    z-index: 4
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    background-image: -webkit-radial-gradient(center 150%, #fff, rgba(0,0,0,0.5))
+    @include opacity(.9)
+    border-bottom: 1px solid #f5f5f5
+  > *
+    position: relative
+    z-index: 5
+  .background
+    position: absolute
+    z-index: 1
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    overflow: hidden
+    display: block
+    content: "."
+    text-indent: -9999em
+    background: url("http://farm1.static.flickr.com/196/515035648_7798c3576f_o.jpg") 0 0 no-repeat
+  hgroup
+    @include prepend(1)
+
+  .breadcrumbs, .pubdate
+    position: absolute
+    top: 5px
+    padding: 5px
+    @include opacity(0.5)
+    -webkit-transition-property: opacity
+    -webkit-transition-duration: .3s
+    @include border_radius(6px)
+    &:hover
+      background: #fff
+      @include opacity(1)
+  .breadcrumbs
+    left: $grid_col_width
+    ol, li
+      margin: 0
+      padding: 0
+      list-style: none
+    li
+      display: inline-block
+      font-weight: bold
+      &:after
+        content: '>'
+        display: inline-block
+        padding: 0 .3em
+        color: rgba(0,0,0,0.4)
+      &:last-child:after
+        content: ''
+  .pubdate
+    right: $grid_col_width
+    text-align: right
+
+.text_content
+  @include col(7)
+  @include prepend(1)
+
+.media_content
+  @include col(2)
+  @include prepend(1)
+  ul, li
+    list-style: none
+    margin: 0
+    padding: 0
+  img
+    width: 100%
+
+footer
+  clear: both
+  background: #d1c8ba
+  padding: 5px 0
+  border-top: 1px solid #a8a093
