@@ -11,11 +11,12 @@ import os
 import logging
 try: import simplejson as json
 except ImportError: import json
+import cStringIO
 # Dropbox
 from dropbox import auth, client
 # Ours
 from db import SQLite as db
-import files
+import bundles
 
 define("port", default=8000, help="run on the given port", type=int)
 
@@ -84,30 +85,59 @@ class MainHandler(BaseHandler):
         oauth_token = self.Auth.baseToken.from_string(userToken)
         self.dbc = client.DropboxClient(self.Auth.dba.config['server'], self.Auth.dba.config['content_server'], self.Auth.dba.config['port'], self.Auth.dba, oauth_token)
         self.clear_cookie('destpath')
-        self.Files = files.FileModel(self.dbc)
+        self.Bundles = bundles.Bundles(self.dbc)
     
     def get(self,path):
-        (t, ret) = self.Files.getPath(path)
-        if path != '' and path != '/':
-            path = path.rstrip('/')
-            shortpath = path.split('/')
-            title = shortpath.pop()
-            path = []
-            fullpath = '/'
-            for p in shortpath:
-                fullpath = fullpath + p + '/'
-                path.append(fullpath)
-        else:
-            path = []
-            title = 'DropBox'
-        getattr(self, 'get_%s' % t)(ret, title, path)
+        (t, ret) = self.Bundles.getPath(path)
+        getattr(self, 'get_%s' % t)(ret,path)
         
-    def get_index(self, flist, title, path):
-        self.render("templates/index.html", title=title, path=path, dirs=flist['dirs'], files=flist['files'])
+    def get_index(self, flist, path):
+        if path == '' or path == '/': 
+            title, npath = 'Index', ''
+        else:
+            split = path.rsplit('/',1)
+            (npath, title) = (split[0], split[1]) if len(split) > 1 else ('',split[0])
+        self.prepare()
+        infopath = '%s/info.txt' % path
+        infopath = infopath.replace('//', '/')
+        (t, info) = self.Bundles.getPath(infopath)
+        #(t,info) = ('error','')
+        info = info.read() if t == "text" else ""
+        other = flist['other']
+        images = flist['images']
+        #self.render("templates/index.html", title=title, path=path, dirs=flist['dirs'], files=flist['files'])
+        self.set_header("Content-Type", 'text/plain')
+        self.write(self.ret(title, npath, info, other, images))
+        
+    def ret(self, title, path, info, other, images):
+        """docstring for ret"""
+        ret = """Title: %(title)s
+Path: %(path)s
+Info: 
+%(info)s
+Files - 
+Images: 
+%(images)s
+Other: 
+%(other)s
+"""
+        val = {'title':title,'path':path,'info':info}
+        val['other'] = '\n- '.join(other)
+        val['images'] = '\n- '.join(images)
+        logging.info(ret%val)
+        return ret % val
     
+    def get_image(self,image,path):
+        self.clear()
+        self.set_header("Content-Type", image.data['mime_type'])
+        img = cStringIO.StringIO() 
+        img.write(image.read())
+        img.seek(0)
+        logging.info(img)
+        self.write(image.read())
     
     def post(self, path):
-        if path == "": 
+        if not path.endswith('.txt'):
             raise tornado.web.HTTPError(400)
         try: 
             action = self.get_argument('action')
@@ -122,16 +152,16 @@ class MainHandler(BaseHandler):
     
     def post_write(self,path):
         content = tornado.escape.xhtml_unescape(self.get_argument('text'))
-        (t, f) = self.Files.getPath(path)
+        (t, f) = self.Bundles.getPath(path)
         if t == 'text' or t == 'new':
             status = f.write(content)
         else:
             status = self.__error(t)
         return status
-        
+    
     def post_rename(self,path):
         newPath = self.get_argument('name')
-        (t, f) = self.Files.getPath(path)
+        (t, f) = self.Bundles.getPath(path)
         if t == 'text':
             status = f.rename(newPath)
         else:
@@ -153,7 +183,7 @@ def main():
     }
     application = tornado.web.Application([
         (r"/login", LoginHandler),
-        (r"/(.*?)", MainHandler),
+            (r"/(.*?)", MainHandler),
     ],**settings)
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(options.port)
