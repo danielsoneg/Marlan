@@ -97,6 +97,9 @@ class dropBoxFile( object ):
         self.content = delinkify(self.content)
         self.content = linkify(self.content)
 
+    def __stripLinks(self):
+        self.content = delinkify(self.content)
+
     def __success(self,message,code={}):
         code['Code'] = 1
         code['Message'] = message

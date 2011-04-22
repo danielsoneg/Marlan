@@ -126,10 +126,14 @@ article {
     right: 8.333%;
     text-align: right; }
 
+.header_content {
+  white-space: pre-wrap; }
+
 .text_content {
   float: left;
   width: 58.333%;
-  margin-left: 8.333%; }
+  margin-left: 8.333%; 
+  white-space: pre-wrap; }
 
 .media_content {
   float: left;

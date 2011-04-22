@@ -7,13 +7,13 @@ jQuery(document).ready(function($) {
   $(context).runOnScope(function(){
     var pageLanding = new pageLandingInteractions(context);
   });
-  $('.text_content').blur(function() {
-      var newValue = $(this).html();
+  $('.text_content, .header_content').blur(function() {
+      var content = $('.header_content').html() + "~~~~" + $('.text_content').html();
       //alert("Sending: " +newValue);
       $.ajax({
          type: "POST",
          url: window.location.pathname,
-         data: "text=" + escape(newValue) + "&action=write",
+         data: "text=" + escape(content) + "&action=write",
          success: editCallback
       });
   });
@@ -30,7 +30,15 @@ function getInfo() {
 }
 
 function swapContent(content) {
-    $('.text_content').html(content);
+    head = "";
+    body = content;
+    if (content.indexOf('~~~~') >= 0) {
+        content = content.split('~~~~',2);
+        head = content[0];
+        body = content[1];
+    };
+    $('.header_content').html(head);
+    $('.text_content').html(body);
     $('a').click(function(){ window.location=$(this).attr('href'); });
 }
 

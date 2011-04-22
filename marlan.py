@@ -115,9 +115,8 @@ class MainHandler(BaseHandler):
         getattr(self, 'get_%s' % t)(ret,path)
         
     def get_index(self, flist, path):
-        info = ''
         title, paths = self.__processPath(path)
-        self.render("template/index.html", title=title, paths=paths, flist=flist, info=info)
+        self.render("template/index.html", title=title, paths=paths, flist=flist)
     
     def __processPath(self, path):
         longp = ""
