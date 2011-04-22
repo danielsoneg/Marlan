@@ -5,6 +5,7 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 import tornado.escape
+import tornado.httpclient
 from tornado.options import define, options
 # Base System
 import os
@@ -72,6 +73,23 @@ class LoginHandler(BaseHandler):
         self.set_secure_cookie('destpath','')
         self.redirect(dest)
 
+
+class InfoHandler(BaseHandler):
+    @tornado.web.asynchronous
+    def get(self,path):
+        logging.info('ASync-Getting ' + path)
+        url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/info.txt" % {'uid':self.current_user,'path':path.rstrip('/')}
+        http = tornado.httpclient.AsyncHTTPClient()
+        http.fetch(url, callback=self.on_response)
+
+    def on_response(self, response):
+        logging.info('Found it')
+        if response.error:
+            self.write('')
+        else:
+            self.write(response.body)
+        self.finish()
+
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def prepare(self):
@@ -92,22 +110,27 @@ class MainHandler(BaseHandler):
         getattr(self, 'get_%s' % t)(ret,path)
         
     def get_index(self, flist, path):
-        if path == '' or path == '/': 
-            title, npath = 'Index', ''
-        else:
-            split = path.rsplit('/',1)
-            (npath, title) = (split[0], split[1]) if len(split) > 1 else ('',split[0])
         self.prepare()
-        infopath = '%s/info.txt' % path
-        infopath = infopath.replace('//', '/')
-        (t, info) = self.Bundles.getPath(infopath)
-        #(t,info) = ('error','')
-        info = info.read() if t == "text" else ""
-        other = flist['other']
-        images = flist['images']
-        #self.render("templates/index.html", title=title, path=path, dirs=flist['dirs'], files=flist['files'])
-        self.set_header("Content-Type", 'text/plain')
-        self.write(self.ret(title, npath, info, other, images))
+        info = ''
+        #if flist['has_info']: info = self.Bundles.getInfo(path)
+        title, paths = self.__processPath(path)
+        self.render("template/index.html", title=title, paths=paths, flist=flist, info=info)
+        
+        #self.set_header("Content-Type", 'text/plain')
+        #self.write(str(flist) + "\n" + info)
+    
+    def __processPath(self, path):
+        longp = ""
+        path = path.rstrip('/')
+        if path == '': return '/',[]
+        pathlist = path.split('/')
+        paths = []
+        title = pathlist.pop()
+        for p in pathlist:
+            longp = longp + '/%s' % p
+            path.append(p)
+        return title, paths
+    
         
     def ret(self, title, path, info, other, images):
         """docstring for ret"""
@@ -183,6 +206,7 @@ def main():
     }
     application = tornado.web.Application([
         (r"/login", LoginHandler),
+        (r"/(.*?)/info.txt", InfoHandler),
             (r"/(.*?)", MainHandler),
     ],**settings)
     http_server = tornado.httpserver.HTTPServer(application)

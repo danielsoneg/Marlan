@@ -14,70 +14,44 @@ class Bundles(object):
     
     def getPath(self, path):
         """docstring for getPath"""
-        path = "/%s" % path
+        path.lstrip('/')
+        path = "/Public/%s" % path
+        logging.info(path)
         resp = self.client.metadata("dropbox", path)
         logging.info("%s , %s" % (resp.data, resp.status))
         if 'is_dir' in resp.data and resp.data['is_dir']:
             t = 'index'
             ret = self.listDir(resp)
-        elif 'mime_type' in resp.data and resp.data['mime_type'].split('/')[0] == 'image':
-            #logging.info(path)
-            t = 'image'
-            ret = self.getImage(path[1:], resp.data)
-        elif 'mime_type' in resp.data and resp.data['mime_type'].split('/')[0] == 'text':
-            #logging.info(path)
-            t = 'text'
-            ret = self.getFile(path[1:], resp.data)
         elif 'error' in resp.data and resp.status == 404:
             t = 'new'
-            ret = self.getFile(path, resp.data)
+            ret = {'folders':[],'files':[],'images':[],'hasinfo':False}
         return (t, ret)
     
-    def getFile(self, name, data):
-        (path, name) = name.rsplit('/',1) if '/' in name else ('', name)
-        #logging.info("%s / %s" % (path, name))
-        return dropBoxFile(name, path, data, self.client)
+    def getInfo(self, path):
+        info = dropBoxFile(path,self.client)
+        return info.read()
     
     def listDir(self,resp):
-        dirlist = {}
-        dirlist['images'] = [i['path'][1:] for i in filter(lambda x: 'mime_type' in x and x['mime_type'].split('/')[0] == 'image', resp.data['contents'])]
-        dirlist['other'] = [i['path'][1:] for i in filter(lambda x: 'mime_type' in x and x['mime_type'].split('/')[0] != 'image' and not x['path'].endswith('/info.txt'), resp.data['contents'])]
+        dirlist = {'folders':[],'files':[],'images':[],'has_info':False}
+        for item in resp.data['contents']:
+            if item['path'].endswith('/info.txt'): dirlist['has_info'] = True
+            elif item['is_dir']: dirlist['folders'].append(item['path'])
+            elif item['mime_type'].startswith('image/'): dirlist['images'].append(item['path'])
+            else: dirlist['files'].append(item['path'])
         return dirlist
 
-    def getImage(self,path,data):
-        return dropBoxImage(path,data,self.client)
-
-class dropBoxImage(object):
-    """docstring for DropBoxImage"""
-    def __init__(self, name, data, client):
-        self.data = data
-        self.client = client
-        self.path = '/%s' % name
-    
-    def read(self):
-        self.handle = self.client.get_file('dropbox',self.path)
-        return self.handle.read()
-    
-    def getThumb(self, size='large'):
-        self.handle = self.client.thumbnail('dropbox',self.path,size)
-        return self.handle.read()
-
 class dropBoxFile( object ):
-    def __init__(self, name, sdir, data, client):
-        self.name = name
-        self.dir = '/%s' % sdir if sdir else ''
-        self.path = "%s/%s" % (self.dir, self.name) 
+    def __init__(self, path, client):
         self.client = client
-        self.content = ""
-        self.data = data
-
+        self.path = '/Public/%s/info.txt' % path
+    
     def read(self):
         self.handle = self.client.get_file("dropbox", self.path)
         self.content = self.handle.read()
         self.handle.close()
         self.__addLinks()
         return self.content
-
+    
     def test(self):
         self.handle = self.client.get_file("dropbox", self.path)
         return dir(self.handle)
@@ -94,13 +68,6 @@ class dropBoxFile( object ):
         self.handle.close()
         self.__addLinks()
         return self.__success(self.content)
-
-    def rename(self,newName):
-        self.client.file_move('dropbox', self.path, newName)
-        oldName = self.path
-        self.path = newName
-        self.dir, self.name = self.path.rsplit('/',1)
-        return self.__success("Renamed",{'oldURL':oldName,'newURL':newName,'newName':self.name, 'newDir':self.dir})
 
     def __preSave(self):
         """docstring for _preSave"""
