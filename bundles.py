@@ -48,10 +48,6 @@ class Bundles(object):
             else: dirlist['files'].append(item['path'])
         return dirlist
 
-def addLinks(content):
-    dummy = dropBoxFile('a',False,'b')
-    return dummy.addLinks(content)
-
 class dropBoxFile( object ):
     def __init__(self, path, client, name):
         self.client = client
@@ -63,12 +59,6 @@ class dropBoxFile( object ):
         self.handle = self.client.get_file("dropbox", self.path)
         self.content = self.handle.read()
         self.handle.close()
-        self.__addLinks()
-        return self.content
-    
-    def addLinks(self, content):
-        '''The Max Power way'''
-        self.content = content
         self.__addLinks()
         return self.content
     
@@ -104,39 +94,40 @@ class dropBoxFile( object ):
 
     # Link Handling
     def __addLinks(self):
-        self.__stripLinks()
-        self.__webLinks()
-        self.__pageLinks()
-
-    def __stripLinks(self):
-        self.content = reUnlink.sub(self.__stripLinks_linkType, self.content)
-
-    def __stripLinks_linkType(self, link):
-        if link.group(1).startswith('http'):
-            return link.group(2)
-        else:
-            return "`%s`" % link.group(2)
-
-    def __pageLinks(self):
-        self.content = reLink.sub('<a href="\\1">\\1</a>', self.content,0)
-
-    def __webLinks(self):
-        self.content = reHref.sub(self.__webLinks_fixHref, self.content, 0)
-
-    def __webLinks_fixHref(self, link):
-        url = link.group(0)
-        href = url
-        if not url.startswith('http'):
-            href = "http://%s" % url
-        return '<a href="%s">%s</a>' % (href, url)
-
+        self.content = delinkify(self.content)
+        self.content = linkify(self.content)
 
     def __success(self,message,code={}):
         code['Code'] = 1
         code['Message'] = message
         return json.dumps(code)
+    
+def linkify(content):
+    content = __linkify_pageLinks(content)
+    content = __linkify_webLinks(content)
+    return content
 
+def __linkify_pageLinks(content):
+    return reLink.sub('<a href="\\1">\\1</a>', content, 0)
 
+def __linkify_webLinks(content):
+    return reHref.sub(__linkify_webLinks_fixHref, content, 0)
+
+def __linkify_webLinks_fixHref(link):
+    url = link.group(0)
+    href = url
+    if not url.startswith('http'):
+        href = "http://%s" % url
+    return '<a href="%s">%s</a>' % (href, url)
+
+def delinkify(content):
+    return reUnlink.sub(__delinkify_linkType, content)
+
+def __delinkify_linkType(link):
+    if link.group(1).startswith('http'):
+        return link.group(2)
+    else:
+        return "`%s`" % link.group(2)
 
 reLink   = re.compile(r'`(.*?)`', re.U)
 reUnlink = re.compile(r'<a href="(.*?)">(.*?)</a>', re.U)

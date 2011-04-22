@@ -25,7 +25,7 @@ function getInfo() {
        type: "GET",
        url: url,
        success: swapContent
-    });   
+    });
     return;
 }
 

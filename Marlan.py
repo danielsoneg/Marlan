@@ -89,7 +89,7 @@ class InfoHandler(BaseHandler):
             self.write(' ')
         else:
             logging.info("adding links")
-            content = bundles.addLinks(response.body)
+            content = bundles.linkify(response.body)
             logging.info("done")
             self.write(content)
         logging.info("Finishing...")
