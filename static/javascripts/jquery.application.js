@@ -8,7 +8,10 @@ jQuery(document).ready(function($) {
     var pageLanding = new pageLandingInteractions(context);
   });
   $('.text_content, .header_content').blur(function() {
-      var content = $('.header_content').html() + "~~~~" + $('.text_content').html();
+      var content = $('.text_content').html();
+      if ($('.header_content').html() != '') {
+          content = $('.header_content').html() + "\n~~~~\n" + content;
+      };
       //alert("Sending: " +newValue);
       $.ajax({
          type: "POST",
@@ -32,8 +35,8 @@ function getInfo() {
 function swapContent(content) {
     head = "";
     body = content;
-    if (content.indexOf('~~~~') >= 0) {
-        content = content.split('~~~~',2);
+    if (content.indexOf("\n~~~~\n") >= 0) {
+        content = content.split("\n~~~~\n",2);
         head = content[0];
         body = content[1];
     };
