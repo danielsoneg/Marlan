@@ -85,9 +85,14 @@ class InfoHandler(BaseHandler):
     def on_response(self, response):
         logging.info('Found it')
         if response.error:
-            self.write('')
+            logging.error(response)
+            self.write(' ')
         else:
-            self.write(response.body)
+            logging.info("adding links")
+            content = bundles.addLinks(response.body)
+            logging.info("done")
+            self.write(content)
+        logging.info("Finishing...")
         self.finish()
 
 class MainHandler(BaseHandler):
@@ -110,14 +115,9 @@ class MainHandler(BaseHandler):
         getattr(self, 'get_%s' % t)(ret,path)
         
     def get_index(self, flist, path):
-        self.prepare()
         info = ''
-        #if flist['has_info']: info = self.Bundles.getInfo(path)
         title, paths = self.__processPath(path)
         self.render("template/index.html", title=title, paths=paths, flist=flist, info=info)
-        
-        #self.set_header("Content-Type", 'text/plain')
-        #self.write(str(flist) + "\n" + info)
     
     def __processPath(self, path):
         longp = ""
@@ -128,40 +128,11 @@ class MainHandler(BaseHandler):
         title = pathlist.pop()
         for p in pathlist:
             longp = longp + '/%s' % p
-            path.append(p)
+            paths.append(p)
         return title, paths
     
-        
-    def ret(self, title, path, info, other, images):
-        """docstring for ret"""
-        ret = """Title: %(title)s
-Path: %(path)s
-Info: 
-%(info)s
-Files - 
-Images: 
-%(images)s
-Other: 
-%(other)s
-"""
-        val = {'title':title,'path':path,'info':info}
-        val['other'] = '\n- '.join(other)
-        val['images'] = '\n- '.join(images)
-        logging.info(ret%val)
-        return ret % val
-    
-    def get_image(self,image,path):
-        self.clear()
-        self.set_header("Content-Type", image.data['mime_type'])
-        img = cStringIO.StringIO() 
-        img.write(image.read())
-        img.seek(0)
-        logging.info(img)
-        self.write(image.read())
-    
     def post(self, path):
-        if not path.endswith('.txt'):
-            raise tornado.web.HTTPError(400)
+        logging.info("Posting!")
         try: 
             action = self.get_argument('action')
         except:
@@ -175,11 +146,7 @@ Other:
     
     def post_write(self,path):
         content = tornado.escape.xhtml_unescape(self.get_argument('text'))
-        (t, f) = self.Bundles.getPath(path)
-        if t == 'text' or t == 'new':
-            status = f.write(content)
-        else:
-            status = self.__error(t)
+        status = self.Bundles.writeContent(path,content)
         return status
     
     def post_rename(self,path):

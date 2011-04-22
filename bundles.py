@@ -23,12 +23,20 @@ class Bundles(object):
             t = 'index'
             ret = self.listDir(resp)
         elif 'error' in resp.data and resp.status == 404:
-            t = 'new'
+            t = 'index'
             ret = {'folders':[],'files':[],'images':[],'hasinfo':False}
         return (t, ret)
     
+    def writeMetadata(self,path,info):
+        meta = dropBoxFile(path,self.client,'.metadata')
+        meta.write(json.dumps(info))
+    
+    def writeContent(self,path,content):
+        info = dropBoxFile(path, self.client, 'info.txt')
+        return info.write(content)
+    
     def getInfo(self, path):
-        info = dropBoxFile(path,self.client)
+        info = dropBoxFile(path,self.client,'info.txt')
         return info.read()
     
     def listDir(self,resp):
@@ -40,15 +48,27 @@ class Bundles(object):
             else: dirlist['files'].append(item['path'])
         return dirlist
 
+def addLinks(content):
+    dummy = dropBoxFile('a',False,'b')
+    return dummy.addLinks(content)
+
 class dropBoxFile( object ):
-    def __init__(self, path, client):
+    def __init__(self, path, client, name):
         self.client = client
-        self.path = '/Public/%s/info.txt' % path
+        self.name = name
+        self.dir = '/Public/%s/' % path
+        self.path = self.dir + self.name
     
     def read(self):
         self.handle = self.client.get_file("dropbox", self.path)
         self.content = self.handle.read()
         self.handle.close()
+        self.__addLinks()
+        return self.content
+    
+    def addLinks(self, content):
+        '''The Max Power way'''
+        self.content = content
         self.__addLinks()
         return self.content
     

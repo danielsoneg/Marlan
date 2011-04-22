@@ -83,8 +83,7 @@ article {
     overflow: hidden;
     display: block;
     content: ".";
-    text-indent: -9999em;
-    background: url("http://farm1.static.flickr.com/196/515035648_7798c3576f_o.jpg") 0 0 no-repeat; }
+    text-indent: -9999em; }
   #header_primary hgroup {
     margin-left: 8.333%; }
   #header_primary .breadcrumbs, #header_primary .pubdate {

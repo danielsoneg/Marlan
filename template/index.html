@@ -33,7 +33,7 @@
         <ol>
           <li><a href='/' title="Public">Public</a></li>
           {% for path in paths %}
-          <li><a href="{{ path }}" title="{{ path }}">{{ basename(path) }}</a></li>
+          <li><a href="{{ path }}" title="{{ path }}">{{ path[path.rfind('/')+1:] }}</a></li>
           {% end %}
           <li>{{title}}</li>
         </ol>
@@ -41,7 +41,7 @@
       <div class="background"></div>
     </header>
     
-    <section class="text_content">
+    <section class="text_content" contenteditable='true'>
       {{info}}
     </section>
     <section class="media_content">

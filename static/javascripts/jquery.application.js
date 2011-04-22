@@ -7,6 +7,16 @@ jQuery(document).ready(function($) {
   $(context).runOnScope(function(){
     var pageLanding = new pageLandingInteractions(context);
   });
+  $('.text_content').blur(function() {
+      var newValue = $(this).html();
+      //alert("Sending: " +newValue);
+      $.ajax({
+         type: "POST",
+         url: window.location.pathname,
+         data: "text=" + escape(newValue) + "&action=write",
+         success: editCallback
+      });
+  });
 });
 
 function getInfo() {
@@ -14,10 +24,19 @@ function getInfo() {
     $.ajax({
        type: "GET",
        url: url,
-       success: gotInfo
+       success: swapContent
     });   
+    return;
 }
 
-function gotInfo(data) {
-    $('.text_content').text(data);
+function swapContent(content) {
+    $('.text_content').html(content);
+    $('a').click(function(){ window.location=$(this).attr('href'); });
+}
+
+function editCallback(data) {
+    data = jQuery.parseJSON(data);
+    if (data.Code == 1) {
+        swapContent(data.Message);
+    }
 }
