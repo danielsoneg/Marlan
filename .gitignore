@@ -1,3 +1,5 @@
 config/apikeys.ini
 config/server.ini
 *.pyc
+
+static/stylesheets/**
