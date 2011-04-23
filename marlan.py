@@ -13,6 +13,7 @@ import logging
 try: import simplejson as json
 except ImportError: import json
 import cStringIO
+import subprocess
 # Dropbox
 from dropbox import auth, client
 # Ours
@@ -116,7 +117,7 @@ class MainHandler(BaseHandler):
         
     def get_index(self, flist, path):
         title, paths = self.__processPath(path)
-        self.render("template/index.html", title=title, paths=paths, flist=flist)
+        self.render("template/index.html", title=title, paths=paths, flist=flist, uid=self.current_user)
     
     def __processPath(self, path):
         longp = ""
@@ -163,6 +164,7 @@ class MainHandler(BaseHandler):
         return status
 
 def main():
+    
     tornado.options.parse_command_line()
     settings = {
         "static_path": os.path.join(os.path.dirname(__file__), "static"),
