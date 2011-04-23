@@ -1,14 +1,22 @@
 function swapContent(content) {
     var head = "";
     var body = content;
+    var contentContainer = $('.text_content');
     if (content.indexOf("\n~~~~\n") >= 0) {
         content = content.split("\n~~~~\n",2);
         head = content[0];
         body = content[1];
     }
-    $('.header_content').html(head);
-    $('.text_content').html(body);
-    $('a').click(function(){ window.location=$(this).attr('href'); });
+    
+    // set header and body content
+    $('.subhead_content').html(head);
+    contentContainer.html(body);
+    
+    // add class to style empty Content area
+    if (contentContainer.text().length <= 5) {
+      contentContainer.addClass('empty');
+      } else { contentContainer.removeClass('empty');
+    }
 }
 
 function getInfo() {
@@ -21,29 +29,26 @@ function getInfo() {
     return;
 }
 
-function pageLandingInteractions(context){
+function pageLandingInteractions(){
     getInfo();
 }
 
 function editCallback(data) {
-    data = jQuery.parseJSON(data);
+    var data = jQuery.parseJSON(data);
     if (data.Code == 1) {
         swapContent(data.Message);
     }
 }
 
 jQuery(document).ready(function($) {
-  var context = '#page_landing';
-
-  $(context).runOnScope(function(){
-    var pageLanding = new pageLandingInteractions(context);
-  });
-  $('.text_content, .header_content').blur(function() {
+  var pageLanding = new pageLandingInteractions();
+  
+  // save content on click out of content editable area
+  $('.text_content, .subhead_content').blur(function() {
       var content = $('.text_content').html();
-      if ($('.header_content').html() !== "") {
-          content = $('.header_content').html() + "\n~~~~\n" + content;
+      if ($('.subhead_content').html() !== "") {
+          content = $('.subhead_content').html() + "\n~~~~\n" + content;
       }
-      //alert("Sending: " +newValue);
       $.ajax({
          type: "POST",
          url: window.location.pathname,
@@ -51,4 +56,10 @@ jQuery(document).ready(function($) {
          success: editCallback
       });
   });
+  
+  // force Content links to go to URL on click instead of edit content
+  $('.text_content a').live('click', function(){
+    window.location=$(this).attr('href');
+  });
+  
 });
