@@ -43,6 +43,9 @@ function editCallback(data) {
 jQuery(document).ready(function($) {
   var pageLanding = new pageLandingInteractions();
   
+  $('body').noisy({
+    opacity: 0.07
+  });
   // save content on click out of content editable area
   $('.text_content, .subhead_content').blur(function() {
       var content = $('.text_content').html();
