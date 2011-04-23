@@ -58,7 +58,7 @@ jQuery(document).ready(function($) {
   });
   
   // force Content links to go to URL on click instead of edit content
-  $('.text_content a').live('click', function(){
+  $('*[contenteditable="true"] a').live('click', function(){
     window.location=$(this).attr('href');
   });
   
