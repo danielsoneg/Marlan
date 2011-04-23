@@ -14,7 +14,7 @@ class Bundles(object):
     
     def getPath(self, path):
         """docstring for getPath"""
-        path.lstrip('/')
+        path = path.lstrip('/')
         path = "/Public/%s" % path
         logging.info(path)
         resp = self.client.metadata("dropbox", path)
@@ -25,6 +25,9 @@ class Bundles(object):
         elif 'error' in resp.data and resp.status == 404:
             t = 'index'
             ret = {'folders':[],'files':[],'images':[],'hasinfo':False}
+        if path == "/Public/":
+            ret['files'] = []
+            ret['images'] = []
         return (t, ret)
     
     def writeMetadata(self,path,info):

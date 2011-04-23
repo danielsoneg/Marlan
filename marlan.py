@@ -121,7 +121,7 @@ class MainHandler(BaseHandler):
     def __processPath(self, path):
         longp = ""
         path = path.rstrip('/')
-        if path == '': return '/',[]
+        if path == '': return 'Index',[]
         pathlist = path.split('/')
         paths = []
         title = pathlist.pop()
