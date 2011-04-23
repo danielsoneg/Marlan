@@ -43,7 +43,7 @@ class Bundles(object):
         dirlist = {'folders':[],'files':[],'images':[],'has_info':False}
         for item in resp.data['contents']:
             if item['path'].endswith('/info.txt'): dirlist['has_info'] = True
-            elif item['is_dir']: dirlist['folders'].append(item['path'])
+            elif item['is_dir']: dirlist['folders'].append(item['path'].replace('/Public',''))
             elif item['mime_type'].startswith('image/'): dirlist['images'].append(item['path'])
             else: dirlist['files'].append(item['path'])
         return dirlist

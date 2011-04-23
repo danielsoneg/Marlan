@@ -53,21 +53,17 @@
         </ul>
       </section>
     {% end %}
+    {% if len(flist['folders']) != 0 %}
     <nav class="tree">
       <ul>
+        {% for folder in flist['folders'] %}
         <li>
-          <a href="#">This is a child directory</a>
+          <a href="{{ folder }}">{{ folder[folder.rfind('/')+1:] }}</a>
         </li>
-        <li>
-          <a href="#">This is a child directory</a>
-          <ul>
-            <li>
-              <a href="#">This is a grandchild directory</a>
-            </li>
-          </ul>
-        </li>
+        {% end %}
       </ul>
     </nav>
+    {% end %}
     <section class="text_content" contenteditable='true'>
     </section>
 

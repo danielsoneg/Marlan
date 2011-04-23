@@ -14,6 +14,7 @@ try: import simplejson as json
 except ImportError: import json
 import cStringIO
 import subprocess
+import urllib
 # Dropbox
 from dropbox import auth, client
 # Ours
@@ -56,7 +57,7 @@ class LoginHandler(BaseHandler):
         userToken = self.Auth.dba.obtain_request_token()
         tokens[userToken.key] = userToken.to_string()
         sentpath = self.get_argument('next','/')
-        self.set_secure_cookie('destpath',sentpath) 
+        self.set_secure_cookie('destpath',tornado.escape.url_escape(sentpath)) 
         userAuthURL= self.Auth.dba.build_authorize_url(userToken,'http://%s%s' %(self.request.headers['Host'],self.get_login_url()))
         self.redirect(userAuthURL)
         pass
@@ -70,7 +71,7 @@ class LoginHandler(BaseHandler):
         email = dbc.account_info().data['email']
         Users.addUser(uid,oauth_token,email)
         self.set_secure_cookie("user", uid)
-        dest = self.get_secure_cookie('destpath')
+        dest = tornado.escape.url_unescape(self.get_secure_cookie('destpath'))
         self.set_secure_cookie('destpath','')
         self.redirect(dest)
 
@@ -79,19 +80,17 @@ class InfoHandler(BaseHandler):
     @tornado.web.asynchronous
     def get(self,path):
         logging.info('ASync-Getting ' + path)
-        url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/info.txt" % {'uid':self.current_user,'path':path.rstrip('/')}
+        path = '/'.join([urllib.quote(p) for p in path.rstrip('/').split('/')])
+        url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/info.txt" % {'uid':self.current_user,'path':path}
         http = tornado.httpclient.AsyncHTTPClient()
         http.fetch(url, callback=self.on_response)
 
     def on_response(self, response):
-        logging.info('Found it')
         if response.error:
             logging.error(response)
             self.write(' ')
         else:
-            logging.info("adding links")
             content = bundles.linkify(response.body)
-            logging.info("done")
             self.write(content)
         logging.info("Finishing...")
         self.finish()
@@ -102,7 +101,7 @@ class MainHandler(BaseHandler):
         #logging.info(self.get_login_url())
         if str(self.current_user) not in user_tokens.keys():
             self.set_secure_cookie("user", '')
-            self.redirect("%s?next=%s"% (self.get_login_url(),self.request.full_url()))
+            self.redirect("%s?next=%s"% (self.get_login_url(),tornado.escape.url_escape(self.request.full_url())))
             return
         userToken = user_tokens[str(self.current_user)]
         self.Auth = dbAuth()
@@ -128,7 +127,7 @@ class MainHandler(BaseHandler):
         title = pathlist.pop()
         for p in pathlist:
             longp = longp + '/%s' % p
-            paths.append(p)
+            paths.append(longp)
         return title, paths
     
     def post(self, path):
