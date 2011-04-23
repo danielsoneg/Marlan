@@ -116,14 +116,29 @@ article
   a
     cursor: pointer
 
-.text_content
+nav.tree, .text_content
   @include prepend(1)
   @include append(1)
-  white-space: pre-wrap
   padding: .5em
-  min-height: 1em
   line-height: 1.6
   font-size: 13px
+
+nav.tree
+  padding-left: 0
+  border-bottom: 1px solid #ddd
+  padding-bottom: 2em
+  margin-bottom: 2em
+  ul
+    padding-left: 1em
+  li
+    li
+      font-size: 1em
+      margin-left: 1em
+      list-style: circle
+
+.text_content
+  white-space: pre-wrap
+  min-height: 1em
   border: 1px solid #fff
   @include content_editable
 .subhead_content
