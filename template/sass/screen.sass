@@ -214,13 +214,14 @@ article
     text-align: right
 
 .text_content
-  @include col(7)
   @include prepend(1)
+  @include append(1)
   white-space: pre-wrap
-
 .media_content
   @include col(2)
+  float: right
   @include prepend(1)
+  @include append(1)
   ul, li
     list-style: none
     margin: 0

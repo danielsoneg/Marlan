@@ -42,17 +42,16 @@
       <div class="background"></div>
     </header>
 
+    {% if len(flist['images']) != 0 %}
+      <section class="media_content">
+        <ul>
+          {% for image in flist['images'] %}
+            <li><img src='http://dl.dropbox.com/u/102389{{ image.replace('/Public','') }}'></li>
+          {% end %}
+        </ul>
+      </section>
+    {% end %}
     <section class="text_content" contenteditable='true'>
-    </section>
-    <section class="media_content">
-      <ul>
-        {% for image in flist['images'] %}
-        <li><img src='http://dl.dropbox.com/u/102389{{ image.replace('/Public','') }}'></li>
-        {% end %}
-        {% if len(flist['images']) == 0 %}
-        <li>No Media Present</li>
-        {% end %}
-      </ul>
     </section>
 
   </article>
