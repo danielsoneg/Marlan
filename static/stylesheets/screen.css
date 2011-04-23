@@ -272,19 +272,6 @@ article {
     font-size: 3em;
     font-weight: normal;
     font-color: #181818; }
-    #header_primary h1:hover:after, #header_primary h1:focus:after {
-      display: block;
-      position: absolute;
-      top: 1.4em;
-      line-height: 1.5;
-      left: -8.333%;
-      width: 7.833%;
-      content: "Pages get the same names as the Dropbox directory.";
-      font-size: 0.2em;
-      font-family: "Calibri", "Lucida Grande", sans-serif;
-      font-weight: bold;
-      color: rgba(0, 0, 0, 0.3);
-      text-shadow: none; }
   #header_primary h2 {
     line-height: 1.5;
     font-size: 1.5em;
