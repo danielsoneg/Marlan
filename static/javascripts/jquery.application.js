@@ -13,7 +13,7 @@ function swapContent(content) {
     contentContainer.html(body);
     
     // add class to style empty Content area
-    if (contentContainer.text().length <= 5) {
+    if (contentContainer.text().length <= 3) {
       contentContainer.addClass('empty');
       } else { contentContainer.removeClass('empty');
     }
