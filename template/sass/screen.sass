@@ -1,117 +1,7 @@
 // BASELINE TEMPLATE
-@import url('core/typography.css')
-
-@mixin clearfix
-  zoom: 1
-  &:after
-    clear: both
-    content: " "
-    display: block
-    font-size: 0
-    line-height: 0
-    height: 0
-    visibility: hidden
-    position: relative
-.clearfix
-  @include clearfix
-
-//  CSS3 BORDER RADIUS
-//  +border_radius(none)
-
-@mixin border_radius($value)
-  -moz-border-radius: $value
-  -webkit-border-radius: $value
-  border-radius: $value
-  -moz-background-clip: padding-box
-  -webkit-background-clip: padding-box
-  background-clip: padding-box
-
-@mixin border_radius_top_left($value)
-  -moz-border-radius-topleft: $value
-  -webkit-border-top-left-radius: $value
-  border-top-left-radius: $value
-  -moz-background-clip: padding-box
-  -webkit-background-clip: padding-box
-  background-clip: padding-box
-
-@mixin border_radius_top_right($value)
-  -moz-border-radius-topright: $value
-  -webkit-border-top-right-radius: $value
-  border-top-right-radius: $value
-  -moz-background-clip: padding-box
-  -webkit-background-clip: padding-box
-  background-clip: padding-box
-
-@mixin border_radius_bottom_left($value)
-  -moz-border-radius-bottomleft: $value
-  -webkit-border-bottom-left-radius: $value
-  border-bottom-left-radius: $value
-  -moz-background-clip: padding-box
-  -webkit-background-clip: padding-box
-  background-clip: padding-box
-
-@mixin border_radius_bottom_right($value)
-  -moz-border-radius-bottomright: $value
-  -webkit-border-bottom-right-radius: $value
-  border-bottom-right-radius: $value
-  -moz-background-clip: padding-box
-  -webkit-background-clip: padding-box
-  background-clip: padding-box
-
-//  BOX SHADOW
-//  +reset_shadow
-@mixin box_shadow($color, $x, $y, $blur)
-  -moz-box-shadow: $color $x $y $blur
-  -webkit-box-shadow: $color $x $y $blur
-  box-shadow: $color $x $y $blur
-
-//  OPACITY
-//  +reset_opacity
-@mixin opacity($standard)
-  -moz-opacity: $standard
-  opacity: $standard
-  zoom: 1
-
-// GRADIENTS
-// 6 character hex required (3 character shorthand will break IE. Eg: #eee = bad, #eeeeee = good.)
-@mixin gradient($top_color, $bottom_color)
-  background: $top_color
-  filter: unquote("progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$top_color}', endColorstr='#{$bottom_color}')")
-  background: -webkit-gradient(linear, unquote("left top"), unquote("left bottom"), from($top_color), to($bottom_color))
-  background: -moz-linear-gradient(top, $top_color, $bottom_color)
-
-
-
-// ######## GRID
-// column count should be a highly composite number (6, 12, 24, 36, 48, 60...)
-$grid_columns: 12
-
-// compute width of 1 column
-$grid_col_width: (100% / $grid_columns)
-
-// allow an element to span N columns
-@mixin colspan($n: 1)
-  width: ($n * $grid_col_width)
-
-// create a COLUMN spanning N columns
-@mixin col($n: 1)
-  float: left
-  @include colspan($n)
-
-// prepend N empty columns
-@mixin prepend($n: 1)
-  margin-left: ($grid_col_width * $n)
-
-// append N empty columns
-@mixin append($n: 1)
-  margin-right: ($grid_col_width * $n)
-
-
-
-
-
-
-
+@import core/_css
+@import core/_typography
+@import core/_grid
 
 
 html, body
@@ -121,9 +11,6 @@ html, body
 body
   background: #fff
   color: #222
-  font: 13px / 1.231 "Calibri", "Lucida Grande", sans-serif
-  *font-size: small
-  // IE6+IE7 hack to preserve specificity
 
 a
   text-decoration: none
@@ -139,7 +26,6 @@ a
     color: #e55117
 
 h1, h2, h3, h4, h5, h6, dt, legend
-  font-family: 'Aller', 'Calibri', sans-serif
   color: #181818
 
 article
@@ -148,7 +34,7 @@ article
 
 #header_primary
   position: relative
-  padding: 120px 0 40px
+  padding: 90px 0 40px
   margin-bottom: 40px
   &:before
     display: block
@@ -160,9 +46,10 @@ article
     right: 0
     bottom: 0
     left: 0
-    background-image: -webkit-radial-gradient(center 150%, #fff, rgba(0,0,0,0.4))
+    background: -webkit-radial-gradient(22% 70%, #fff, rgba(0,0,0,.3))
     @include opacity(.9)
-    border-bottom: 1px solid #f5f5f5
+    @include box_shadow(rgba(0,0,0,.5), 0, 0, 25px)
+    border-bottom: 1px solid rgba(0,0,0,.2)
   > *
     position: relative
     z-index: 5
@@ -179,7 +66,15 @@ article
     text-indent: -9999em
   hgroup
     @include prepend(1)
+    @include append(1)
+  h1, h2
+    line-height: 1.2
+  h1
+    font:
+      size: 36px
+      weight: normal
   h2
+    font-size: 18px
     white-space: pre-wrap
 
   .breadcrumbs, .pubdate
@@ -213,10 +108,28 @@ article
     right: $grid_col_width
     text-align: right
 
+@mixin content_editable
+  &.empty, &:focus
+    background: #fff5a2
+    padding-bottom: 2em
+    @include box_shadow(#fff5a2, 0, 0, 25px)
+  a
+    cursor: pointer
+
 .text_content
   @include prepend(1)
   @include append(1)
   white-space: pre-wrap
+  padding: .5em
+  min-height: 1em
+  line-height: 1.6
+  font-size: 13px
+  border: 1px solid #fff
+  @include content_editable
+.subhead_content
+  @include content_editable
+
+
 .media_content
   @include col(2)
   float: right
@@ -227,7 +140,10 @@ article
     margin: 0
     padding: 0
   img
-    width: 100%
+    border: 1px solid #ccc
+    padding: 3px
+    max-width: 95%
+    margin: 0 auto 10px
 
 footer
   clear: both

@@ -1,0 +1,73 @@
+@mixin clearfix
+  zoom: 1
+  &:before, &:after
+    content: ""
+    display: block
+    overflow: hidden
+  &:after
+    clear: both
+
+//  CSS3 BORDER RADIUS
+//  +border_radius(none)
+
+@mixin border_radius($value)
+  -moz-border-radius: $value
+  -webkit-border-radius: $value
+  border-radius: $value
+  -moz-background-clip: padding-box
+  -webkit-background-clip: padding-box
+  background-clip: padding-box
+
+@mixin border_radius_top_left($value)
+  -moz-border-radius-topleft: $value
+  -webkit-border-top-left-radius: $value
+  border-top-left-radius: $value
+  -moz-background-clip: padding-box
+  -webkit-background-clip: padding-box
+  background-clip: padding-box
+
+@mixin border_radius_top_right($value)
+  -moz-border-radius-topright: $value
+  -webkit-border-top-right-radius: $value
+  border-top-right-radius: $value
+  -moz-background-clip: padding-box
+  -webkit-background-clip: padding-box
+  background-clip: padding-box
+
+@mixin border_radius_bottom_left($value)
+  -moz-border-radius-bottomleft: $value
+  -webkit-border-bottom-left-radius: $value
+  border-bottom-left-radius: $value
+  -moz-background-clip: padding-box
+  -webkit-background-clip: padding-box
+  background-clip: padding-box
+
+@mixin border_radius_bottom_right($value)
+  -moz-border-radius-bottomright: $value
+  -webkit-border-bottom-right-radius: $value
+  border-bottom-right-radius: $value
+  -moz-background-clip: padding-box
+  -webkit-background-clip: padding-box
+  background-clip: padding-box
+
+//  BOX SHADOW
+//  +reset_shadow
+@mixin box_shadow($color, $x, $y, $blur)
+  -moz-box-shadow: $color $x $y $blur
+  -webkit-box-shadow: $color $x $y $blur
+  box-shadow: $color $x $y $blur
+
+//  OPACITY
+//  +reset_opacity
+@mixin opacity($standard)
+  -moz-opacity: $standard
+  opacity: $standard
+  zoom: 1
+
+// GRADIENTS
+// 6 character hex required (3 character shorthand will break IE. Eg: #eee = bad, #eeeeee = good.)
+@mixin gradient($top_color, $bottom_color)
+  background: $top_color
+  filter: unquote("progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$top_color}', endColorstr='#{$bottom_color}')")
+  background: -webkit-gradient(linear, unquote("left top"), unquote("left bottom"), from($top_color), to($bottom_color))
+  background: -moz-linear-gradient(top, $top_color, $bottom_color)

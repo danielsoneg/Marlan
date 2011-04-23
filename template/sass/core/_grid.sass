@@ -1,0 +1,23 @@
+// ######## GRID
+// column count should be a highly composite number (6, 12, 24, 36, 48, 60...)
+$grid_columns: 12
+
+// compute width of 1 column
+$grid_col_width: (100% / $grid_columns)
+
+// allow an element to span N columns
+@mixin colspan($n: 1)
+  width: ($n * $grid_col_width)
+
+// create a COLUMN spanning N columns
+@mixin col($n: 1)
+  float: left
+  @include colspan($n)
+
+// prepend N empty columns
+@mixin prepend($n: 1)
+  margin-left: ($grid_col_width * $n)
+
+// append N empty columns
+@mixin append($n: 1)
+  margin-right: ($grid_col_width * $n)
