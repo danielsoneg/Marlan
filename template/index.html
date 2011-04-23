@@ -31,41 +31,55 @@
         <h1>{{ title }}</h1>
         <h2 class='subhead_content' contenteditable='true'></h2>
       </hgroup>
-      <!-- <div class="pubdate">Last updated <time datetime="2011-02-09">Apr 20, 2011</time>.</div> -->
       <nav class="breadcrumbs">
         <ol>
-          <li><a href='/' title="Public">Public</a></li>
+          <li>
+            <a href='/' title="Public">Public</a>
+          </li>
           {% for path in paths %}
-          <li><a href="{{ path }}" title="{{ path }}">{{ path[path.rfind('/')+1:] }}</a></li>
+            <li>
+              <a href="{{ path }}" title="{{ path }}">{{ path[path.rfind('/')+1:] }}</a>
+            </li>
           {% end %}
-          <li>{{title}}</li>
+          <li>
+            {{title}}
+          </li>
+          <li class="children">
+            <ul>
+              <li class="add_child">
+                <input type="text" class="defaulted" value="new page" /><button>&#187;</button>
+              </li>
+              {% if len(flist['folders']) != 0 %}
+                <li class="view_children">
+                  <ul>
+                    {% for folder in flist['folders'] %}
+                      <li>
+                        <a href="{{ folder }}">{{ folder[folder.rfind('/')+1:] }}</a>
+                      </li>
+                    {% end %}
+                  </ul>
+                </li>
+              {% end %}
+            </ul>
+          </li>
         </ol>
       </nav>
       <div class="background"></div>
     </header>
 
-    {% if len(flist['images']) != 0 %}
-      <section class="media_content">
-        <ul>
-          {% for image in flist['images'] %}
-            <li><img src="http://dl.dropbox.com/u/{{ uid }}{{ image.replace('/Public','') }}"></li>
-          {% end %}
-        </ul>
+    <div class="content">
+      {% if len(flist['images']) != 0 %}
+        <section class="media_content">
+          <ul>
+            {% for image in flist['images'] %}
+              <li><img src="http://dl.dropbox.com/u/{{ uid }}{{ image.replace('/Public','') }}"></li>
+            {% end %}
+          </ul>
+        </section>
+      {% end %}
+      <section class="text_content" contenteditable='true'>
       </section>
-    {% end %}
-    {% if len(flist['folders']) != 0 %}
-    <nav class="tree">
-      <ul>
-        {% for folder in flist['folders'] %}
-        <li>
-          <a href="{{ folder }}">{{ folder[folder.rfind('/')+1:] }}</a>
-        </li>
-        {% end %}
-      </ul>
-    </nav>
-    {% end %}
-    <section class="text_content" contenteditable='true'>
-    </section>
+    </div>
 
   </article>
 

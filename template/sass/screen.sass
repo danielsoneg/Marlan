@@ -4,14 +4,17 @@
 @import core/_typography
 @import core/_grid
 
-
 html, body
   margin: 0
   padding: 0
+  // height:100%;overflow:auto used for body box-shadow
+  height: 100%
+  overflow: auto
 
 body
   background: #fff
   color: #222
+  box-shadow: inset rgba(0,0,0,0.4) 0 0 20px
 
 a
   text-decoration: none
@@ -19,9 +22,9 @@ a
   &:link
     color: #0f6def
   &:visited
-    color: #0077cc
+    color: #0066cc
   &:hover, &:focus
-    color: #0099ff
+    color: #0033ff
     text-decoration: underline
   &:active
     color: #e55117
@@ -35,8 +38,8 @@ article
 
 #header_primary
   position: relative
-  padding: 90px 0 40px
-  margin-bottom: 40px
+  padding: 8em 0 3em
+  text-shadow: rgba(255,255,255,0.3) 0 1px 10px, rgba(255,255,255,0.3) 1px 2px
   &:before
     display: block
     content: '.'
@@ -50,7 +53,7 @@ article
     background: -webkit-radial-gradient(22% 70%, #fff, rgba(0,0,0,.3))
     @include opacity(.9)
     @include box_shadow(rgba(0,0,0,.5), 0, 0, 25px)
-    border-bottom: 1px solid rgba(0,0,0,.2)
+    border-bottom: 1px solid rgba(255,255,255,.4)
   > *
     position: relative
     z-index: 5
@@ -68,83 +71,179 @@ article
   hgroup
     @include prepend(1)
     @include append(1)
-  h1, h2
-    line-height: 1.2
   h1
+    line-height: 1
+    position: relative
     font:
-      size: 36px
+      size: 3em
       weight: normal
+      color: #181818
+    &:hover, &:focus
+      &:after
+        display: block
+        position: absolute
+        top: 1.4em
+        line-height: 1.5
+        left: -$grid_col_width
+        width: $grid_col_width * .94
+        content: 'Pages get the same names as the Dropbox directory.'
+        font:
+          size: .2em
+          family: $font_stack
+          weight: bold
+        color: rgba(0,0,0,0.3)
+        text-shadow: none
   h2
-    font-size: 18px
+    line-height: 1.5
+    font-size: 1.5em
     white-space: pre-wrap
+    color: #2c2c2c
 
-  .breadcrumbs, .pubdate
+  .breadcrumbs
+    @include prepend(1)
+    @include append(1)
+    text-shadow: none
+    float: right
+    right: 0
     position: absolute
     top: 5px
-    padding: 5px
-    @include opacity(0.5)
+    font-size: .9em
+    padding: 0 .7em
+    @include opacity(0.6)
     -webkit-transition-property: opacity
     -webkit-transition-duration: .3s
     @include border_radius(6px)
-    &:hover
-      background: #fff
-      @include opacity(1)
-  .breadcrumbs
-    left: $grid_col_width
-    ol, li
+    background: (rgba(255,255,255,0.1))
+    ol, ul, li
       margin: 0
       padding: 0
       list-style: none
+      position: relative
     li
       display: inline-block
       font-weight: bold
+      position: relative
+      padding: .4em 0
       &:after
         content: '>'
         display: inline-block
         padding: 0 .3em
         color: rgba(0,0,0,0.4)
-      &:last-child:after
-        content: ''
-  .pubdate
-    right: $grid_col_width
-    text-align: right
+      &.children li:after, &:last-child:after
+        display: none
+      &.children li
+        display: block
+      &.view_children
+        @include reset_box
+        ul
+          position: absolute
+          left: .5em
+          top: .7em
+          @include border_radius(6px)
+        li
+          padding-top: 0
+          &:before
+            position: absolute
+            left: -2em
+            content: '>'
+            display: inline-block
+            color: rgba(0,0,0,0.4)
+    input
+      @include reset_box
+      padding: .3em .5em
+        right: 30px
+      background: transparent
+      width: 150px
+      box-shadow: rgba(255,255,255,.3) 0 1px 3px, inset rgba(0,0,0,0.3) 0 0 2em, inset rgba(0,0,0,0.3) 0 1px 2px
+      @include border_radius(2px)
+      color: #666
+      &:hover, &:focus, &:active
+        color: #000
+        background: rgba(255,245,162,0.6)
+      &:focus, &:active
+        background: hsl(54deg, 100%, 82%)
+    button
+      @include reset_box
+      position: absolute
+      top: .4em
+      right: 0
+      bottom: .4em
+      width: auto
+      font:
+        weight: bold
+        size: 1.1em
+        line-height: 1
+      padding: 0 .5em
+        left: .6em
+      background: #353535
+      color: #fff
+      @include border_radius(2px)
+      display: none
+      &:hover, &:focus, &:active
+        background: #000
+      &:active
+        color: orange
+
+.content
+  padding: 60px 0
+  text-shadow: rgba(255,255,255,0.5) 0 1px 10px, rgba(255,255,255,0.6) 1px 2px
 
 @mixin content_editable
+  border: 1px solid transparent
   &.empty, &:focus
-    background: #fff5a2
+    border-color: #fff
+    background: hsl(54deg, 100%, 82%)
     padding-bottom: 2em
-    @include box_shadow(#fff5a2, 0, 0, 25px)
+    @include box_shadow(hsl(54deg, 100%, 82%), 0, 0, 25px)
   a
     cursor: pointer
 
-nav.tree, .text_content
+.subhead_content
+  @include content_editable
+
+.text_content
   @include prepend(1)
   @include append(1)
   padding: .5em
   line-height: 1.6
-  font-size: 13px
-
-nav.tree
-  padding-left: 0
-  border-bottom: 1px solid #ddd
-  padding-bottom: 2em
-  margin-bottom: 2em
-  ul
-    padding-left: 1em
-  li
-    li
-      font-size: 1em
-      margin-left: 1em
-      list-style: circle
-
-.text_content
+  font-size: 1.1em
+  position: relative
   white-space: pre-wrap
   min-height: 1em
-  border: 1px solid #fff
   @include content_editable
-.subhead_content
-  @include content_editable
+  &.empty:before
+    content: 'Write some stuff to save this page:'
+    font:
+      size: 11px
+      weight: bold
+    display: block
+    position: absolute
+    top: -2.3em
+    left: 0
+    height: 2em
+    line-height: 2em
+    color: #777
 
+.finish_edit
+  font:
+    size: 11px
+    weight: bold
+  position: fixed
+  z-index: 20
+  top: $grid_col_width * .3
+  left: $grid_col_width * .2
+  width: $grid_col_width
+  text-align: center
+  padding: .9em 0
+  line-height: 1.2em
+  color: #fff
+  @include border_radius(3px)
+  background: #181818
+  box-shadow: inset rgba(255,255,255,0.3) 0 1px 1px, inset rgba(255,255,255,0.2) 0 2px 1em, rgba(255,255,255,0.7) 0 0 5px, rgba(255,255,255,.9) 0 0 1px
+  text-shadow: rgba(255,255,255,0.4) 0 1px 1px
+  &:hover, &:focus
+    background: #0066ff
+    cursor: pointer
 
 .media_content
   @include col(2)
@@ -166,3 +265,11 @@ footer
   background: #d1c8ba
   padding: 5px 0
   border-top: 1px solid #a8a093
+
+//@media screen and (min-width:480px)
+//
+//@media screen and (max-width:768px)
+//
+//@media screen and (min-width: 992px)
+//
+//@media screen and (min-width:1382px)

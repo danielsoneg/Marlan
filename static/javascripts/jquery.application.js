@@ -75,4 +75,19 @@ jQuery(document).ready(function($) {
     window.location=$(this).attr('href');
   });
   
+  // breadcrumb create page
+  var breadcrumbs = $('.breadcrumbs');
+  $('input', breadcrumbs).focus(function(){
+    $('button', breadcrumbs).show();
+  });
+  $('input', breadcrumbs).blur(function(){
+    setTimeout(function(){
+      $('button', breadcrumbs).fadeOut(1000);
+    }, 800);
+  });
+  $('button', breadcrumbs).click(function(){
+    var newPage = $('input', breadcrumbs).val();
+    window.location=window.location.pathname+'/'+newPage;
+  });
+  
 });
