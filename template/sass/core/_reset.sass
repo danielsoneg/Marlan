@@ -1,0 +1,88 @@
+// shared > RESET
+
+=reset_focus
+  overflow: hidden
+
+=reset_font
+  font:
+    weight: inherit
+    style: inherit
+    size: 100%
+    family: inherit
+  vertical-align: baseline
+  text:
+    decoration: none
+
+=reset_box
+  margin: 0
+  padding: 0
+  position: relative
+  zoom: 1
+  border: 0
+
+=reset_position
+  top: auto
+  right: auto
+  bottom: auto
+  left: auto
+
+=reset_shadow
+  -moz-box-shadow: none
+  -webkit-box-shadow: none
+  box-shadow: none
+  text-shadow: none
+
+=reset_opacity
+  -moz-opacity: 1
+  opacity: 1
+  -ms-filter: unquote("alpha(opacity-10)")
+  filter: alpha(opacity-10)
+
+=reset_list
+  +reset_box
+  list-style: none
+
+=reset_table
+  border-collapse: collapse
+  border-spacing: 0
+  vertical-align: middle
+
+=reset_table_cell
+  text-align: left
+  font-weight: normal
+  vertical-align: middle
+
+=reset_quotation
+  quotes: "" ""
+  &:before, &:after
+    content: ""
+
+=reset_form_input
+  -webkit-appearance: none
+
+=grouped_reset
+  ol, ul, li
+    +reset_list
+    +reset_font
+  ol
+    padding-left: 25px
+  table
+    +reset_table
+  caption, th, td
+    +reset_table_cell
+  q, blockquote
+    +reset_quotation
+  img, a img
+    border: 0
+    display: block
+    float: none
+
+//  All-inclusive super-nuke reset. Use sparingly - it carries a lot of bloat. From cart's core/_reset.sass
+=reset
+  border: 0
+  +reset_font
+  +reset_box
+  +reset_shadow
+  +reset_focus
+  +reset_table
+  +reset_table_cell

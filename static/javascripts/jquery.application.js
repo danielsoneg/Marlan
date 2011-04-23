@@ -46,6 +46,12 @@ jQuery(document).ready(function($) {
   $('body').noisy({
     opacity: 0.07
   });
+  
+  // show "finish edit" target when editing
+  $('.text_content, .subhead_content').focus(function() {
+    $('article').prepend("<div class='finish_edit'>finish edit</div>");
+  });
+  
   // save content on click out of content editable area
   $('.text_content, .subhead_content').blur(function() {
       var content = $('.text_content').html();
@@ -58,6 +64,10 @@ jQuery(document).ready(function($) {
          data: "text=" + escape(content) + "&action=write",
          success: editCallback
       });
+      $('.finish_edit').fadeOut(300);
+      setTimeout(function(){
+        $('.finish_edit').remove();
+      }, 300);
   });
   
   // force Content links to go to URL on click instead of edit content
