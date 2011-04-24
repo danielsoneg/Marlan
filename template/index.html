@@ -72,7 +72,9 @@
         <section class="media_content">
           <ul>
             {% for image in flist['images'] %}
-              <li><img src="http://dl.dropbox.com/u/{{ uid }}{{ image.replace('/Public','') }}"></li>
+              <li>
+                <a href="http://dl.dropbox.com/u/{{ uid }}{{ image.replace('/Public','') }}" title="view full size"><img src="http://dl.dropbox.com/u/{{ uid }}{{ image.replace('/Public','') }}"></a>
+              </li>
             {% end %}
           </ul>
         </section>

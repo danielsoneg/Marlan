@@ -477,11 +477,13 @@ article {
     list-style: none;
     margin: 0;
     padding: 0; }
-  .media_content img {
-    border: 1px solid #cccccc;
-    padding: 3px;
-    max-width: 95%;
-    margin: 0 auto 10px; }
+  .media_content a {
+    display: inline-block; }
+    .media_content a img {
+      border: 1px solid #cccccc;
+      padding: 3px;
+      max-width: 95%;
+      margin: 0 auto 10px; }
 
 footer {
   clear: both;
