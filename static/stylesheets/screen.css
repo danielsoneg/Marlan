@@ -404,7 +404,6 @@ article {
   .subhead_content.empty, .subhead_content:focus {
     border-color: white;
     background: #fff6a3;
-    padding-bottom: 2em;
     -moz-box-shadow: #fff6a3 0 0 25px;
     -webkit-box-shadow: #fff6a3 0 0 25px;
     box-shadow: #fff6a3 0 0 25px; }
@@ -424,7 +423,6 @@ article {
   .text_content.empty, .text_content:focus {
     border-color: white;
     background: #fff6a3;
-    padding-bottom: 2em;
     -moz-box-shadow: #fff6a3 0 0 25px;
     -webkit-box-shadow: #fff6a3 0 0 25px;
     box-shadow: #fff6a3 0 0 25px; }
