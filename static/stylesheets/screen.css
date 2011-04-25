@@ -309,6 +309,8 @@ article {
       font-weight: bold;
       position: relative;
       padding: 0.4em 0; }
+      #header_primary .breadcrumbs li:first-child {
+        display: none; }
       #header_primary .breadcrumbs li:after {
         content: ">";
         display: inline-block;
