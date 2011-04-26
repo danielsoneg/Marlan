@@ -83,7 +83,7 @@ jQuery(document).ready(function($) {
   $('input', breadcrumbs).blur(function(){
     setTimeout(function(){
       $('button', breadcrumbs).fadeOut(1000);
-    }, 800);
+    }, 1500);
   });
   $('button', breadcrumbs).click(function(){
     var newPage = $('input', breadcrumbs).val();
