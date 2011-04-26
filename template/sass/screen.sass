@@ -160,8 +160,6 @@ article
       padding: .4em 0
       a
         display: inline-block
-      &:first-child
-        display: none
       &:after
         content: '>'
         display: inline-block
@@ -229,6 +227,8 @@ article
     @include box_shadow(hsl(54deg, 100%, 82%), 0, 0, 25px)
   &.empty
     @include opacity(0.6)
+    &:focus
+      @include opacity(1)
   a
     cursor: pointer
 
