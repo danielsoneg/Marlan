@@ -29,7 +29,7 @@
     <header id="header_primary">
       <hgroup>
         <h1>{{ title }}</h1>
-        <h2 class='subhead_content' contenteditable='true'></h2>
+        <h2 class='subhead_content' contenteditable='true' tabindex="4"></h2>
       </hgroup>
       <nav class="breadcrumbs">
         <ol>
@@ -47,14 +47,14 @@
           <li class="children">
             <ul>
               <li class="add_child">
-                <input type="text" class="defaulted" value="new page" /><button>&#187;</button>
+                <input type="text" class="defaulted" value="new page" tabindex="1" /><button tabindex="2">&#187;</button>
               </li>
               {% if len(flist['folders']) != 0 %}
                 <li class="view_children">
                   <ul>
                     {% for folder in flist['folders'] %}
                       <li>
-                        <a href="{{ folder }}">{{ folder[folder.rfind('/')+1:] }}</a>
+                        <a tabindex="3" href="{{ folder }}">{{ folder[folder.rfind('/')+1:] }}</a>
                       </li>
                     {% end %}
                   </ul>
@@ -79,7 +79,7 @@
           </ul>
         </section>
       {% end %}
-      <section class="text_content" contenteditable='true'>
+      <section class="text_content" contenteditable='true' tabindex="5">
       </section>
     </div>
 
