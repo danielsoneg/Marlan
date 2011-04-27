@@ -1,40 +1,59 @@
 function createFolders(data,uid) {
-    $.each(data.folders, function(index, value){ 
-        name = value.substring(value.lastIndexOf('/')+1);
-        current = $('li.view_children ul').html();
-        link = '<li><a href="/u'+uid + value + '">'+name+'</a></li>';
-        $('li.view_children ul').html(current + link);
-    });
+    if (data.folders.length > 0) {
+        var html = "<ul class='folders'>";
+        $.each(data.folders, function(index, value){ 
+            name = value.substring(value.lastIndexOf('/')+1);
+            alert(name);
+            link = "\n<li><a href='/u"+uid + value + "'>"+name+'</a></li>';
+            html = html + link;
+        });
+        html = html + "\n</ul>";
+        $('section.additional_content').html(html);
+    }
 }
 
 function createMedia(data,uid) {
-    $.each(data.images, function(index, value){
-        url = 'http://dl.dropbox.com/u/' + uid + value;
-        //alert(url);
-        img = '<li><a href="'+ url + '"><img src="'+url+'"></img></a></li>\n';
-        current = $('section.additional_content ul').html();
-        $('section.additional_content ul').html(current + img);
-    });
-    $.each(data.files, function(index,value){
-        url = 'http://dl.dropbox.com/u/' + uid + value;
-        name = value.substring(value.lastIndexOf('/')+1);
-        //alert(url);
-        if (name != '.metadata') {
-            img = '<li><a href="'+ url + '">'+name+'</a></li>\n';
-            current = $('section.additional_content ul').html();
-            $('section.additional_content ul').html(current + img);
-        }
-    });
+    var html = $('section.additional_content').html()
+    if (data.files.length > 0) {
+        html = html + '\n<ul class="files">';
+        $.each(data.files, function(index,value){
+            url = 'http://dl.dropbox.com/u/' + uid + value;
+            name = value.substring(value.lastIndexOf('/')+1);
+            //alert(url);
+            link = '<li><a href="'+ url + '">'+name+'</a></li>\n';
+            html = html + link;
+        });
+        html = html + '\n</ul>';
+    }
+    if (data.images.length > 0) {
+        html = html + '\n<ul class="images">';
+        $.each(data.images, function(index, value){
+            url = 'http://dl.dropbox.com/u/' + uid + value;
+            //alert(url);
+            img = '<li><a href="'+ url + '"><img src="'+url+'"></img></a></li>\n';
+            html = html + img;
+        });
+        html = html + "\n</ul>";
+    }
+    $('section.additional_content').html(html);
+}
+
+function passCallback(data) {
+    alert(data);
 }
 
 function metadataCallback(data) {
     if (data.length > 1) {
         url = window.location.pathname;
         var uid = url.substr(2,url.indexOf('/',1)-2);
-        var data = jQuery.parseJSON(data);
-        createMedia(data,uid);
+        data = jQuery.parseJSON(data);
         createFolders(data,uid);
-    }
+        createMedia(data,uid);
+    };
+    if ($('body').hasClass('public')) {
+        var url = window.location.pathname +'/info.txt';
+        getInfo(url);
+    };
 }
 
 function swapContent(content) {
@@ -55,12 +74,14 @@ function swapContent(content) {
       contentContainer.addClass('empty');
       } else { 
           contentContainer.removeClass('empty');
-          $.ajax({
-              type: 'POST',
-              url: window.location.pathname,
-              data: 'action=metadata',
-              success: metadataCallback
-          });
+          if ($('body').hasClass('private')){
+              $.ajax({
+                  type: 'POST',
+                  url: window.location.pathname,
+                  data: 'action=metadata',
+                  success: metadataCallback
+              });
+          }
     }
     return;
 }
@@ -76,9 +97,9 @@ function getInfo(url) {
 
 function pageLandingInteractions(){
     var url = window.location.pathname +'/info.txt';
-    if ($('body').hasClass('public')) {
+    if (!$('body').hasClass('public')) {
+        getInfo(url);
     }
-    getInfo(url);
 }
 
 function editCallback(data) {
@@ -121,6 +142,25 @@ jQuery(document).ready(function($) {
   // force Content links to go to URL on click instead of edit content
   $('*[contenteditable="true"] a').live('click', function(){
     window.location=$(this).attr('href');
+  });
+  
+  $('a#pwgo').click(function(){
+      var pass = '' + $('input#pw').val();
+      $.ajax({
+         type: "POST",
+         url: window.location.pathname,
+         data: "pw=" + escape(pass) + "&action=public",
+         success: passCallback
+      });
+  });
+  $('a#pubgo').click(function(){
+      var pass = '' + $('input#pw').val();
+      $.ajax({
+          type: 'POST',
+          url: window.location.pathname,
+          data: "pw=" + escape(pass) + '&action=metadata',
+          success: metadataCallback
+      });
   });
   
   // breadcrumb create page

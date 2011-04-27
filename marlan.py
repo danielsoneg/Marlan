@@ -17,6 +17,7 @@ import subprocess
 import urllib
 import time
 import re
+from hashlib import sha1
 # Dropbox
 from dropbox import auth, client
 # Ours
@@ -126,20 +127,41 @@ class PublicHandler(BaseHandler):
     @tornado.web.asynchronous
     def post(self,uid,path):
         logging.info('ASync-Posting ' + path)
+        pw = self.get_argument('pw', default=False)
+        if not pw:
+            self.write('0')
+            self.finish()
+        self.p = sha1("%s-%s" % (uid, pw)).hexdigest()
         path = '/'.join([urllib.quote(p) for p in path.rstrip('/').split('/')])
-        url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/.metadata" % {'uid':uid,'path':path}
+        self.url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/" % {'uid':uid,'path':path}
+        url = self.url + '.pass'
         logging.info(url)
         http = tornado.httpclient.AsyncHTTPClient()
         http.fetch(url, callback=self.on_response)
 
     def on_response(self, response):
+        logging.info('gotResponse')
         if response.error:
             logging.error(response)
-            self.write(' ')
+            self.write('0')
+            self.finish()
+        logging.info(response.body)
+        if self.p != response.body:
+            logging.info(self.p)
+            self.write('0')
+            self.finish()
+        url = self.url + '.metadata'
+        logging.info(url)
+        http = tornado.httpclient.AsyncHTTPClient()
+        http.fetch(url, callback=self.gotMetadata)
+    
+    def gotMetadata(self, response):
+        if response.error:
+            self.write('0')
         else:
             self.write(response.body)
-        logging.info(response.body)
         self.finish()
+        
 
     
         
@@ -194,6 +216,15 @@ class MainHandler(BaseHandler):
             logging.error('Asked for invalid action: %s' % action)
             raise tornado.web.HTTPError(400)
     
+    def post_public(self, path):
+        pw = self.get_argument('pw', default=False)
+        uid = self.current_user
+        p = False
+        if pw != False:
+            p = sha1("%s-%s" % (uid, pw)).hexdigest()
+        ret = self.Bundles.addPass(path, p)
+        return json.dumps({'Code':1})
+        
     def post_metadata(self,path):
         logging.info('meta-data-ing')
         self.Bundles.writeMetadata(path)

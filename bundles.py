@@ -36,6 +36,11 @@ class Bundles(object):
         meta.write(json.dumps(info))
         return
     
+    def addPass(self,path,pw):
+        passfile = dropBoxFile(path, self.client, '.pass')
+        ret = passfile.rm() if pw == False else passfile.write(pw)
+        return ret
+    
     def writeContent(self,path,content):
         info = dropBoxFile(path, self.client, 'info.txt')
         return info.write(content)
@@ -45,11 +50,12 @@ class Bundles(object):
         return info.read()
     
     def listDir(self,resp):
-        dirlist = {'folders':[],'files':[],'images':[],'has_info':False}
+        dirlist = {'folders':[],'files':[],'images':[],'has_info':False,'has_pass':False}
         for item in resp.data['contents']:
             path = item['path']
             path = rePublic.sub('/', path, 1)
             if item['path'].endswith('/info.txt'): dirlist['has_info'] = True
+            elif item['path'].endswith('/.pass'): dirlist['has_pass'] = True
             elif item['path'].endswith('/.metadata'): continue
             elif item['is_dir']: dirlist['folders'].append(path)
             elif item['mime_type'].startswith('image/'): dirlist['images'].append(path)
@@ -73,7 +79,12 @@ class dropBoxFile( object ):
     def test(self):
         self.handle = self.client.get_file("dropbox", self.path)
         return dir(self.handle)
-
+    
+    def rm(self):
+        """Delete the file"""
+        self.client.file_delete("dropbox", self.path)
+        return self.__success('Deleted %s' % self.path)
+    
     def write(self,content):
         self.content = content
         self.__preSave()

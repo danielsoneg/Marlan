@@ -57,6 +57,11 @@
     <div class="content">
       {% if len(flist['images']) != 0 or len(flist['files']) != 0 or len(flist['folders']) != 0 or public %}
         <section class="additional_content">
+          {% if not public %}
+            <ul class='folders gopublic'>
+              <li>Public <input id='pw' type='password' value='{% if flist['has_pass'] %}password{% end %}'/></input><a id='pwgo'>go</a></li>
+            </ul>
+          {% end %}
           {% if len(flist['folders']) != 0 %}
             <ul class="folders">
               {% for folder in flist['folders'] %}
@@ -86,7 +91,9 @@
           {% end %}
         </section>
       {% end %}
-      <section class="text_content" {% if not public %} contenteditable='true' {% end %} tabindex="2"></section>
+      <section class="text_content" {% if not public %} contenteditable='true' {% end %} tabindex="2">
+        {% if public %}<h2>Password</h2><input type='password' id='pw'></input><a id='pubgo'>go</a>{% end %}
+      </section>
       <nav class="view_mode">
         <ul>
           <li class="document">
