@@ -121,11 +121,11 @@ class MainHandler(BaseHandler):
     def get(self,path):
         (t, ret) = self.Bundles.getPath(path)
         getattr(self, 'get_%s' % t)(ret,path)
-        
+    
     def get_index(self, flist, path):
         title, paths = self.__processPath(path)
-        self.render("template/index.html", title=title, paths=paths, flist=flist, uid=self.current_user)
-        
+        self.render("template/index.html", title=title, paths=paths, flist=flist, uid=self.current_user, public=False)
+    
     def __processPath(self, path):
         longp = ""
         path = path.rstrip('/')

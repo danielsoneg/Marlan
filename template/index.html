@@ -23,7 +23,7 @@
 
 </head>
 
-<body id="page_landing">
+<body id="page_landing" {% if public %}class='public'{% end %}>
 
   <article>
     <header id="header_primary">
@@ -49,7 +49,7 @@
               <li class="add_child">
                 <input type="text" class="defaulted" value="new page" tabindex="1" /><button tabindex="2">&#187;</button>
               </li>
-              {% if len(flist['folders']) != 0 %}
+              {% if len(flist['folders']) != 0 or public %}
                 <li class="view_children">
                   <ul>
                     {% for folder in flist['folders'] %}
@@ -68,12 +68,17 @@
     </header>
 
     <div class="content">
-      {% if len(flist['images']) != 0 %}
+      {% if len(flist['images']) != 0 or len(flist['files']) != 0 or public %}
         <section class="media_content">
           <ul>
             {% for image in flist['images'] %}
               <li>
                 <a href="http://dl.dropbox.com/u/{{ uid }}{{ image }}" title="view full size"><img src="http://dl.dropbox.com/u/{{ uid }}{{ image }}"></a>
+              </li>
+            {% end %}
+            {% for file in flist['files'] %}
+              <li>
+                <a href="http://dl.dropbox.com/u/{{ uid }}{{ file }}" title="view full size">{{ file[file.rfind('/')+1:] }}</a>
               </li>
             {% end %}
           </ul>
@@ -90,6 +95,7 @@
   <script src="/static/javascripts/plugins/jquery.defaulted.js"></script>
   <script src="/static/javascripts/plugins/jquery.noisy.oct10.2010.js"></script>
   <script src="/static/javascripts/jquery.application.js"></script>
+  {% if public %}<script src='/static/javascripts/jquery.public.js'></script>{% end %}
 
 </body>
 </html>
