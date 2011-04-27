@@ -33,7 +33,7 @@ html, body
   position: relative
   height: 0px
   background: #0088dd
-  -webkit-box-shadow: inset 0 0 1px rgba(255,255,255,0.3), 0 0 3px #000
+  box-shadow: inset 0 0 1px rgba(255,255,255,0.3), 0 0 3px #000
   @include border_radius(5px)
   &:window-inactive
     background: #ddd
@@ -46,13 +46,13 @@ body
 a
   text-decoration: none
   font-weight: bold
-  &:link
+  &:link, &:visited
     color: #0f6def
-  &:visited
-    color: #0066cc
   &:hover, &:focus
-    color: #0033ff
-    text-decoration: underline
+    color: #0066ff
+    text:
+      decoration: underline
+      shadow: rgba(255,255,255,0.5) 0 0 5px
   &:active
     color: #e55117
 
@@ -111,21 +111,6 @@ article
       size: 3em
       weight: normal
       color: #181818
-    //&:hover, &:focus
-    //  &:after
-    //    display: block
-    //    position: absolute
-    //    top: 1.4em
-    //    line-height: 1.5
-    //    left: -$grid_col_width
-    //    width: $grid_col_width * .94
-    //    content: 'Pages get the same names as the Dropbox directory.'
-    //    font:
-    //      size: .2em
-    //      family: $font_stack
-    //      weight: bold
-    //    color: rgba(0,0,0,0.3)
-    //    text-shadow: none
   h2
     line-height: 1.2
     font-size: 1.45em
@@ -236,7 +221,7 @@ article
 
 .text_content
   @include prepend(1)
-  @include append(1)
+  @include append(4)
   padding: .5em
   line-height: 1.6
   font-size: 1.1em
@@ -284,11 +269,15 @@ article
     padding: 0
   a
     display: inline-block
+    @include border_radius(3px)
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3)
+    padding: 7px
+    background: #fff
+    margin: 0 auto 10px
     img
-      border: 1px solid #ccc
-      padding: 3px
-      max-width: 95%
-      margin: 0 auto 10px
+      max-width: 100%
+    &:hover, &:focus
+      box-shadow: 0 1px 6px #0066ff, 0 1px 1px rgba(0,0,0,0.3)
 
 footer
   clear: both
