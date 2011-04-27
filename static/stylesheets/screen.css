@@ -459,31 +459,6 @@ article {
     bottom: 0;
     width: 1px;
     background-image: -webkit-linear-gradient(rgba(0, 0, 0, 0.1), transparent); }
-  .view_mode div {
-    display: none;
-    z-index: 5;
-    position: absolute;
-    left: 30px;
-    top: 0em;
-    background: #181818;
-    white-space: nowrap;
-    height: 26px;
-    line-height: 26px;
-    font-size: 12px;
-    padding: 0 15px;
-    -moz-border-radius-topright: 0.9em;
-    -webkit-border-top-right-radius: 0.9em;
-    border-top-right-radius: 0.9em;
-    -moz-background-clip: padding-box;
-    -webkit-background-clip: padding-box;
-    background-clip: padding-box;
-    -moz-border-radius-bottomright: 0.9em;
-    -webkit-border-bottom-right-radius: 0.9em;
-    border-bottom-right-radius: 0.9em;
-    -moz-background-clip: padding-box;
-    -webkit-background-clip: padding-box;
-    background-clip: padding-box;
-    font-weight: bold; }
   .view_mode a {
     color: white;
     -moz-border-radius: 3px;
@@ -497,7 +472,7 @@ article {
     text-shadow: rgba(255, 255, 255, 0.4) 0 1px 1px;
     display: block;
     width: 2.4em;
-    height: 1.8em;
+    height: 1.7em;
     padding: 0.4em;
     position: relative;
     background-image: -webkit-linear-gradient(white, #eeeeee);
@@ -513,6 +488,31 @@ article {
     .view_mode a:hover, .view_mode a:focus {
       background: #0066ff;
       cursor: pointer; }
+    .view_mode a div {
+      display: none;
+      z-index: 5;
+      position: absolute;
+      left: 30px;
+      top: 0em;
+      background: #181818;
+      white-space: nowrap;
+      height: 25px;
+      line-height: 26px;
+      font-size: 12px;
+      padding: 0 15px;
+      -moz-border-radius-topright: 0.9em;
+      -webkit-border-top-right-radius: 0.9em;
+      border-top-right-radius: 0.9em;
+      -moz-background-clip: padding-box;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      -moz-border-radius-bottomright: 0.9em;
+      -webkit-border-bottom-right-radius: 0.9em;
+      border-bottom-right-radius: 0.9em;
+      -moz-background-clip: padding-box;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      font-weight: bold; }
     .view_mode a:hover, .view_mode a:focus {
       background: #0066ff;
       text-decoration: none; }
@@ -532,23 +532,28 @@ article {
     position: relative;
     width: 1em;
     height: 1.3em; }
-    .view_mode .document span:before, .view_mode .document span:after {
-      content: " ";
-      display: block; }
-    .view_mode .document span:before {
+    .view_mode .document span span {
       margin: 0.1em;
         margin-top: 0.2em;
       border-radius: 0;
       border-left: 0;
       border-right: 0;
       height: 0.2em;
+      width: 0.8em;
       box-shadow: none; }
-    .view_mode .document span:after {
-      position: absolute;
-      top: -0.1em;
+      .view_mode .document span span:before, .view_mode .document span span:after {
+        display: none; }
+    .view_mode .document span:before, .view_mode .document span:after {
+      content: " ";
+      display: block;
       left: 1.4em;
       width: 0.4em;
-      height: 0.2em; }
+      height: 0.2em;
+      position: absolute; }
+    .view_mode .document span:before {
+      top: -0.1em; }
+    .view_mode .document span:after {
+      top: 0.6em; }
   .view_mode .grid span {
     position: relative;
     margin-bottom: 0.1em; }

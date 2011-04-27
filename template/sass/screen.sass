@@ -219,27 +219,11 @@ article
     bottom: 0
     width: 1px
     background-image: -webkit-linear-gradient(rgba(0,0,0,0.1), transparent)
-  div
-    display: none
-    z-index: 5
-    position: absolute
-    left: 30px
-    top: 0em
-    background: #181818
-    white-space: nowrap
-    height: 26px
-    line-height: 26px
-    font-size: 12px
-    padding: 0 15px
-    @include border_radius_top_right(.9em)
-    @include border_radius_bottom_right(.9em)
-    font:
-      weight: bold
   a
     @include mini_button
     display: block
     width: 2.4em
-    height: 1.8em
+    height: 1.7em
     padding: .4em
     position: relative
     background-image: -webkit-linear-gradient(#fff, #eee)
@@ -247,6 +231,22 @@ article
     margin: .5em
       bottom: .75em
     text-decoration: none
+    div
+      display: none
+      z-index: 5
+      position: absolute
+      left: 30px
+      top: 0em
+      background: #181818
+      white-space: nowrap
+      height: 25px
+      line-height: 26px
+      font-size: 12px
+      padding: 0 15px
+      @include border_radius_top_right(.9em)
+      @include border_radius_bottom_right(.9em)
+      font:
+        weight: bold
     &:hover, &:focus
       background: #0066ff
       text-decoration: none
@@ -270,10 +270,7 @@ article
       position: relative
       width: 1em
       height: 1.3em
-      &:before, &:after
-        content: ' '
-        display: block
-      &:before
+      span
         margin: .1em
           top: .2em
         border-radius: 0
@@ -281,13 +278,21 @@ article
           left: 0
           right: 0
         height: .2em
+        width: .8em
         box-shadow: none
-      &:after
-        position: absolute
-        top: -.1em
+        &:before, &:after
+          display: none
+      &:before, &:after
+        content: ' '
+        display: block
         left: 1.4em
         width: .4em
         height: .2em
+        position: absolute
+      &:before
+        top: -.1em
+      &:after
+        top: .6em
   .grid
     span
       position: relative
