@@ -41,10 +41,10 @@ function swapContent(content) {
     var head = "";
     var body = content;
     var contentContainer = $('.text_content');
-    if (content.indexOf("\n~~~~\n") >= 0) {
-        content = content.split("\n~~~~\n",2);
-        head = content[0];
-        body = content[1];
+    if (content.indexOf("~~~~") >= 0) {
+        content = content.split("~~~~",2);
+        head = content[0].trim();
+        body = content[1].trim();
     }
     
     // set header and body content
@@ -102,9 +102,9 @@ jQuery(document).ready(function($) {
   
   // save content on click out of content editable area
   $('.text_content[contenteditable="true"], .subhead_content[contenteditable="true"]').blur(function() {
-      var content = $('.text_content').html();
+      var content = $('.text_content').html().trim();
       if ($('.subhead_content').html() !== "") {
-          content = $('.subhead_content').html() + "\n~~~~\n" + content;
+          content = $('.subhead_content').html().trim() + "\n~~~~\n" + content;
       }
       $.ajax({
          type: "POST",
