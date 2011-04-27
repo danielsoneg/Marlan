@@ -23,13 +23,13 @@
 
 </head>
 
-<body id="page_landing" {% if public %}class='public'{% end %}>
+<body id="page_landing" {% if public %}class='public'{% else %}class='private'{% end %}>
 
   <article>
     <header id="header_primary">
       <hgroup>
         <h1>{{ title }}</h1>
-        <h2 class='subhead_content' contenteditable='true' tabindex="4"></h2>
+        <h2 class='subhead_content' {% if not public %} contenteditable='true' {% end %} tabindex="4"></h2>
       </hgroup>
       <nav class="breadcrumbs">
         <ol>
@@ -84,7 +84,7 @@
           </ul>
         </section>
       {% end %}
-      <section class="text_content" contenteditable='true' tabindex="5">
+      <section class="text_content" {% if not public %} contenteditable='true' {% end %} tabindex="5">
       </section>
     </div>
 

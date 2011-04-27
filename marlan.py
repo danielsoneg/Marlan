@@ -16,6 +16,7 @@ import cStringIO
 import subprocess
 import urllib
 import time
+import re
 # Dropbox
 from dropbox import auth, client
 # Ours
@@ -81,8 +82,17 @@ class InfoHandler(BaseHandler):
     @tornado.web.asynchronous
     def get(self,path):
         logging.info('ASync-Getting ' + path)
-        path = '/'.join([urllib.quote(p) for p in path.rstrip('/').split('/')])
-        url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/info.txt" % {'uid':self.current_user,'path':path}
+        tpath = '/'.join([urllib.quote(p) for p in path.rstrip('/').split('/')])
+        if re.match(r'u\d{5,6}/', path) != None:
+            logging.info('hey, anon')
+            tpath = '/'.join([tornado.escape.url_escape(p) for p in path.rstrip('/').split('/')])
+            uid = tpath[1:tpath.find('/')]
+            tpath = tpath[tpath.find('/')+1:]
+        else:
+            uid = self.current_user
+        logging.info(tpath)
+        url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/info.txt" % {'uid':uid,'path':tpath}
+        logging.info(url)
         http = tornado.httpclient.AsyncHTTPClient()
         http.fetch(url, callback=self.on_response)
 
@@ -93,16 +103,46 @@ class InfoHandler(BaseHandler):
         else:
             content = bundles.linkify(response.body)
             self.write(content)
+        logging.info(content)
+        self.finish()
+
+class PublicHandler(BaseHandler):
+    def get(self,uid,path):
+        title, paths = self.__processPath(path)
+        flist = {'folders':[],'files':[],'images':[],'has_info':False}
+        self.render("template/index.html", title=title, paths=paths, flist=flist, uid=uid, public=True)
+    
+    def __processPath(self, path):
+        longp = ""
+        path = path.rstrip('/')
+        if path == '': return 'Index',[]
+        pathlist = path.split('/')
+        paths = []
+        title = pathlist.pop()
+        for p in pathlist:
+            longp = longp + '/%s' % p
+            paths.append(longp)
+        return title, paths
+    
+    @tornado.web.asynchronous
+    def post(self,uid,path):
+        logging.info('ASync-Posting ' + path)
+        url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/.metadata" % {'uid':uid,'path':path}
+        logging.info(url)
+        http = tornado.httpclient.AsyncHTTPClient()
+        http.fetch(url, callback=self.on_response)
+
+    def on_response(self, response):
+        if response.error:
+            logging.error(response)
+            self.write(' ')
+        else:
+            self.write(response.body)
         logging.info("Finishing...")
         self.finish()
 
-class test(object):
-    """docstring for test"""
-    def __init__(self, arg):
-        super(test, self).__init__()
-        self.arg = arg
+    
         
-
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def prepare(self):
@@ -177,6 +217,7 @@ class MainHandler(BaseHandler):
         #logging.info(t)
         status = json.dumps({'Code':0,'Message':t})
         return status
+    
 
 def main():
     
@@ -190,6 +231,7 @@ def main():
     application = tornado.web.Application([
         (r"/login", LoginHandler),
         (r"/(.*?)/info.txt", InfoHandler),
+        (r'/u([\d]{5,6})/(.*?)', PublicHandler),
             (r"/(.*?)", MainHandler),
     ],**settings)
     http_server = tornado.httpserver.HTTPServer(application)

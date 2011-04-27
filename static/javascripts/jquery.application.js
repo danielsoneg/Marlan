@@ -1,3 +1,40 @@
+function createFolders(data,uid) {
+    $.each(data.folders, function(index, value){
+        name = value.substring(value.lastIndexOf('/')+1);
+        current = $('li.view_children ul').html()
+        link = '<li><a href="/u'+uid + value + '">'+name+'</a></li>';
+        $('li.view_children ul').html(current + link);
+    });
+}
+
+function createMedia(data,uid) {
+    $.each(data.images, function(index, value){
+        url = 'http://dl.dropbox.com/u/' + uid + value;
+        //alert(url);
+        img = '<li><a href="'+ url + '"><img src="'+url+'"></img></a></li>\n';
+        current = $('section.media_content ul').html();
+        $('section.media_content ul').html(current + img);
+    });
+    $.each(data.files, function(index,value){
+        url = 'http://dl.dropbox.com/u/' + uid + value;
+        name = value.substring(value.lastIndexOf('/')+1);
+        //alert(url);
+        img = '<li><a href="'+ url + '">'+name+'</a></li>\n';
+        current = $('section.media_content ul').html();
+        $('section.media_content ul').html(current + img);
+    });
+}
+
+function metadataCallback(data) {
+    if (data.length > 1) {
+        url = window.location.pathname;
+        var uid = url.substr(2,url.indexOf('/',1)-2);
+        var data = jQuery.parseJSON(data);
+        createMedia(data,uid);
+        createFolders(data,uid);
+    }
+}
+
 function swapContent(content) {
     var head = "";
     var body = content;
@@ -20,13 +57,13 @@ function swapContent(content) {
               type: 'POST',
               url: window.location.pathname,
               data: 'action=metadata',
+              success: metadataCallback
           });
     }
     return;
 }
 
-function getInfo() {
-    var url = window.location.pathname +'/info.txt';
+function getInfo(url) {
     $.ajax({
        type: "GET",
        url: url,
@@ -36,7 +73,10 @@ function getInfo() {
 }
 
 function pageLandingInteractions(){
-    getInfo();
+    var url = window.location.pathname +'/info.txt';
+    if ($('body').hasClass('public')) {
+    };
+    getInfo(url);
 }
 
 function editCallback(data) {
@@ -54,12 +94,12 @@ jQuery(document).ready(function($) {
   });
   
   // show "finish edit" target when editing
-  $('.text_content, .subhead_content').focus(function() {
+  $('.text_content[contenteditable="true"], .subhead_content[contenteditable="true"]').focus(function() {
     $('article').prepend("<div class='finish_edit'>finish edit</div>");
   });
   
   // save content on click out of content editable area
-  $('.text_content, .subhead_content').blur(function() {
+  $('.text_content[contenteditable="true"], .subhead_content[contenteditable="true"]').blur(function() {
       var content = $('.text_content').html();
       if ($('.subhead_content').html() !== "") {
           content = $('.subhead_content').html() + "\n~~~~\n" + content;
