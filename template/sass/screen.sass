@@ -8,7 +8,7 @@
   color: #fff
   @include border_radius(3px)
   background: #181818
-  box-shadow: inset rgba(255,255,255,0.3) 0 1px 1px, inset rgba(255,255,255,0.2) 0 2px 1em, rgba(255,255,255,0.7) 0 0 5px, rgba(255,255,255,.9) 0 0 1px
+  box-shadow: inset rgba(255,255,255,0.3) 0 1px 1px, inset rgba(255,255,255,0.2) 0 2px 1em
   text-shadow: rgba(255,255,255,0.4) 0 1px 1px
   &:hover, &:focus
     background: #0066ff
@@ -202,6 +202,133 @@ article
 .content
   padding: 60px 0
   text-shadow: rgba(255,255,255,0.5) 0 1px 10px, rgba(255,255,255,0.6) 1px 2px
+  position: relative
+
+.view_mode
+  position: absolute
+  top: 0
+  left: ($grid_col_width * .1)
+  border-top: 1px solid rgba(0,0,0,0.1)
+  background-image: -webkit-linear-gradient(rgba(0,0,0,0.2), transparent)
+  text-shadow: none
+  font-size: 10px
+  line-height: 1
+  &:after
+    content: ' '
+    position: absolute
+    display: block
+    left: 0
+    top: 0
+    bottom: 0
+    width: 1px
+    background-image: -webkit-linear-gradient(rgba(0,0,0,0.1), transparent)
+  &:before
+    content: ' '
+    position: absolute
+    display: block
+    right: 0
+    top: 0
+    bottom: 0
+    width: 1px
+    background-image: -webkit-linear-gradient(rgba(0,0,0,0.1), transparent)
+  div
+    display: none
+    position: absolute
+    left: 30px
+    font:
+      weight: bold
+  a
+    @include mini_button
+    display: block
+    width: 24px
+    padding: .4em
+    position: relative
+    background-image: -webkit-linear-gradient(#fff, #eee)
+    @include border_radius(2px)
+    margin: .5em
+      bottom: .75em
+    &:hover, &:focus
+      background: #0066ff
+  $icon_color: rgba(0,0,0,.8)
+  span
+    display: block
+    background-image: -webkit-linear-gradient(#fff, #ccc)
+    &, *, &:before, &:after
+      border:
+        color: $icon_color
+        style: solid
+    &, &:before, &:after
+      box-shadow: rgba(0,0,0,0.3) 0 -.1em .1em, rgba(255,255,255,.7) 0 .1em .1em
+  .document
+    span
+      position: relative
+      width: 1em
+      height: 1.2em
+      &, &:before, &:after
+        border:
+          width: .2em
+          radius: .2em
+      &:before, &:after
+        content: ' '
+        display: block
+      &:before
+        margin: .1em
+          top: .2em
+        border-radius: 0
+        border:
+          left: 0
+          right: 0
+        height: .2em
+        box-shadow: none
+      &:after
+        position: absolute
+        top: -.1em
+        left: 1.4em
+        width: .4em
+        height: .2em
+  .grid
+    span
+      position: relative
+      margin-bottom: .2em
+      &:nth-child(2)
+        margin-bottom: 0
+      &, &:after
+        background-image: -webkit-linear-gradient(rgba(255,255,255,.5), transparent)
+        width: .7em
+        height: .4em
+        border:
+          width: .2em
+          radius: .2em
+      &:after
+        content: ' '
+        position: absolute
+        display: block
+        top: -.2em
+        right: -1.4em
+  .slideshow
+    span
+      position: relative
+      margin-top: 1em
+      background-image: -webkit-linear-gradient(#fff, transparent)
+      height: .6em
+      &:before, &:after
+        display: block
+        content: ' '
+        position: absolute
+      &:before
+        top: -1em
+        border:
+          width: .1em
+          left: 0
+          right: 0
+          bottom: 0
+        width: .6em
+      &:after
+        top: -.4em
+        border:
+          width: .1em
+          bottom: 0
+        height: .1em
 
 @mixin content_editable
   border: 1px solid transparent
@@ -216,7 +343,7 @@ article
   a
     cursor: pointer
 
-.subhead_content
+.private .subhead_content
   @include content_editable
 
 .text_content
@@ -228,6 +355,7 @@ article
   position: relative
   white-space: pre-wrap
   min-height: 1em
+.private .text_content
   @include content_editable
   &:focus
     padding-bottom: 3em

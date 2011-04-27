@@ -68,6 +68,35 @@
     </header>
 
     <div class="content">
+      <nav class="view_mode">
+        <ul>
+          <li class="document">
+            <a href="#">
+              <span></span>
+              <div>Document</div>
+            </a>
+          </li>
+          <li class="grid">
+            <a href="#">
+              <span></span>
+              <span></span>
+              <div>Grid</div>
+            </a>
+          </li>
+          <li class="slideshow">
+            <a href="#">
+              <span></span>
+              <div>Slideshow</div>
+            </a>
+          </li>
+          <li class="spacetraveller">
+            <a href="#">
+              <span></span>
+              <div>Space Traveller</div>
+            </a>
+          </li>
+        </ul>
+      </nav>
       {% if len(flist['images']) != 0 or len(flist['files']) != 0 or public %}
         <section class="media_content">
           <ul>
