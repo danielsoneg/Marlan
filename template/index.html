@@ -92,7 +92,7 @@
         </section>
       {% end %}
       <section class="text_content" {% if not public %} contenteditable='true' {% end %} tabindex="2">
-        {% if public %}<h2>Password</h2><input type='password' id='pw'></input><a id='pubgo'>go</a>{% end %}
+        {% if public %}<h2>Password</h2><form><input type='password' id='pw'></input><a id='pubgo'>go</a></form>{% end %}
       </section>
       <nav class="view_mode">
         <ul>

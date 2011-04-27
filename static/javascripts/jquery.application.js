@@ -3,7 +3,6 @@ function createFolders(data,uid) {
         var html = "<ul class='folders'>";
         $.each(data.folders, function(index, value){ 
             name = value.substring(value.lastIndexOf('/')+1);
-            alert(name);
             link = "\n<li><a href='/u"+uid + value + "'>"+name+'</a></li>';
             html = html + link;
         });
@@ -39,21 +38,25 @@ function createMedia(data,uid) {
 }
 
 function passCallback(data) {
-    alert(data);
+    alert('Set Password');
 }
 
 function metadataCallback(data) {
+    if (data == 0) {
+        //Incorrect Password Stuff Goes Here
+        alert('Wrong Pass!');
+    }
     if (data.length > 1) {
         url = window.location.pathname;
         var uid = url.substr(2,url.indexOf('/',1)-2);
         data = jQuery.parseJSON(data);
         createFolders(data,uid);
         createMedia(data,uid);
-    };
-    if ($('body').hasClass('public')) {
-        var url = window.location.pathname +'/info.txt';
-        getInfo(url);
-    };
+        if ($('body').hasClass('public')) {
+            var url = window.location.pathname +'/info.txt';
+            getInfo(url);
+        };
+    }        
 }
 
 function swapContent(content) {

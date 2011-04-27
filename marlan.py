@@ -142,14 +142,16 @@ class PublicHandler(BaseHandler):
     def on_response(self, response):
         logging.info('gotResponse')
         if response.error:
-            logging.error(response)
+            logging.error('Resp: %s' % response)
             self.write('0')
             self.finish()
+            return
         logging.info(response.body)
         if self.p != response.body:
             logging.info(self.p)
             self.write('0')
             self.finish()
+            return
         url = self.url + '.metadata'
         logging.info(url)
         http = tornado.httpclient.AsyncHTTPClient()
