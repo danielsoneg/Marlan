@@ -490,7 +490,8 @@ article {
     box-shadow: inset rgba(255, 255, 255, 0.3) 0 1px 1px, inset rgba(255, 255, 255, 0.2) 0 2px 1em;
     text-shadow: rgba(255, 255, 255, 0.4) 0 1px 1px;
     display: block;
-    width: 24px;
+    width: 2.4em;
+    height: 1.8em;
     padding: 0.4em;
     position: relative;
     background-image: -webkit-linear-gradient(white, #eeeeee);
@@ -508,20 +509,19 @@ article {
     .view_mode a:hover, .view_mode a:focus {
       background: #0066ff; }
   .view_mode span {
-    display: block;
-    background-image: -webkit-linear-gradient(white, #cccccc); }
+    display: block; }
     .view_mode span, .view_mode span *, .view_mode span:before, .view_mode span:after {
+      border-width: 0.2em;
       border-color: rgba(0, 0, 0, 0.8);
-      border-style: solid; }
+      border-style: solid;
+      border-radius: 0.2em;
+      background-image: -webkit-linear-gradient(white, #cccccc); }
     .view_mode span, .view_mode span:before, .view_mode span:after {
       box-shadow: rgba(0, 0, 0, 0.3) 0 -0.1em 0.1em, rgba(255, 255, 255, 0.7) 0 0.1em 0.1em; }
   .view_mode .document span {
     position: relative;
     width: 1em;
-    height: 1.2em; }
-    .view_mode .document span, .view_mode .document span:before, .view_mode .document span:after {
-      border-width: 0.2em;
-      border-radius: 0.2em; }
+    height: 1.3em; }
     .view_mode .document span:before, .view_mode .document span:after {
       content: " ";
       display: block; }
@@ -541,12 +541,11 @@ article {
       height: 0.2em; }
   .view_mode .grid span {
     position: relative;
-    margin-bottom: 0.2em; }
+    margin-bottom: 0.1em; }
     .view_mode .grid span:nth-child(2) {
       margin-bottom: 0; }
     .view_mode .grid span, .view_mode .grid span:after {
-      background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.5), transparent);
-      width: 0.7em;
+      width: 0.8em;
       height: 0.4em;
       border-width: 0.2em;
       border-radius: 0.2em; }
@@ -558,25 +557,50 @@ article {
       right: -1.4em; }
   .view_mode .slideshow span {
     position: relative;
-    margin-top: 1em;
-    background-image: -webkit-linear-gradient(white, transparent);
-    height: 0.6em; }
+    margin: 0 auto;
+    width: 0.8em; }
+    .view_mode .slideshow span, .view_mode .slideshow span:before, .view_mode .slideshow span:after {
+      height: 1.2em; }
     .view_mode .slideshow span:before, .view_mode .slideshow span:after {
+      display: block;
+      position: absolute;
+      content: " ";
+      width: 0.2em;
+      top: -0.1em;
+      border-width: 0.1em;
+      border-radius: 0; }
+    .view_mode .slideshow span:before {
+      left: -0.8em;
+      border-left: 0; }
+    .view_mode .slideshow span:after {
+      right: -0.8em;
+      border-right: 0; }
+  .view_mode .spacetraveller span {
+    position: relative;
+    margin-top: 0.4em;
+    height: 0.8em; }
+    .view_mode .spacetraveller span:before, .view_mode .spacetraveller span:after {
       display: block;
       content: " ";
       position: absolute; }
-    .view_mode .slideshow span:before {
-      top: -1em;
+    .view_mode .spacetraveller span:before {
+      top: -0.7em;
+      left: 0.6em;
       border-width: 0.1em;
       border-left: 0;
       border-right: 0;
       border-bottom: 0;
-      width: 0.6em; }
-    .view_mode .slideshow span:after {
-      top: -0.4em;
+      border-color: rgba(0, 0, 0, 0.4);
+      width: 0.7em; }
+    .view_mode .spacetraveller span:after {
+      top: -0.5em;
       border-width: 0.1em;
       border-bottom: 0;
-      height: 0.1em; }
+      border-left: 0;
+      border-right: 0;
+      border-color: rgba(0, 0, 0, 0.6);
+      width: 1.7em;
+      left: 0.1em; }
 
 .private .subhead_content {
   border: 1px solid transparent; }

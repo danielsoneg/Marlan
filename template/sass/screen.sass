@@ -240,7 +240,8 @@ article
   a
     @include mini_button
     display: block
-    width: 24px
+    width: 2.4em
+    height: 1.8em
     padding: .4em
     position: relative
     background-image: -webkit-linear-gradient(#fff, #eee)
@@ -252,22 +253,20 @@ article
   $icon_color: rgba(0,0,0,.8)
   span
     display: block
-    background-image: -webkit-linear-gradient(#fff, #ccc)
     &, *, &:before, &:after
       border:
+        width: .2em
         color: $icon_color
         style: solid
+        radius: .2em
+      background-image: -webkit-linear-gradient(#fff, #ccc)
     &, &:before, &:after
       box-shadow: rgba(0,0,0,0.3) 0 -.1em .1em, rgba(255,255,255,.7) 0 .1em .1em
   .document
     span
       position: relative
       width: 1em
-      height: 1.2em
-      &, &:before, &:after
-        border:
-          width: .2em
-          radius: .2em
+      height: 1.3em
       &:before, &:after
         content: ' '
         display: block
@@ -289,12 +288,11 @@ article
   .grid
     span
       position: relative
-      margin-bottom: .2em
+      margin-bottom: .1em
       &:nth-child(2)
         margin-bottom: 0
       &, &:after
-        background-image: -webkit-linear-gradient(rgba(255,255,255,.5), transparent)
-        width: .7em
+        width: .8em
         height: .4em
         border:
           width: .2em
@@ -308,27 +306,57 @@ article
   .slideshow
     span
       position: relative
-      margin-top: 1em
-      background-image: -webkit-linear-gradient(#fff, transparent)
-      height: .6em
+      margin: 0 auto
+      width: .8em
+      &, &:before, &:after
+        height: 1.2em
+      &:before, &:after
+        display: block
+        position: absolute
+        content: ' '
+        width: .2em
+        top: -.1em
+        border:
+          width: .1em
+          radius: 0
+      &:before
+        left: -.8em
+        border:
+          left: 0
+      &:after
+        right: -.8em
+        border:
+          right: 0
+
+  .spacetraveller
+    span
+      position: relative
+      margin-top: .4em
+      height: .8em
       &:before, &:after
         display: block
         content: ' '
         position: absolute
       &:before
-        top: -1em
+        top: -.7em
+        left: .6em
         border:
           width: .1em
           left: 0
           right: 0
           bottom: 0
-        width: .6em
+          color: rgba(0,0,0,0.4)
+        width: .7em
       &:after
-        top: -.4em
+        top: -.5em
         border:
           width: .1em
           bottom: 0
-        height: .1em
+          left: 0
+          right: 0
+          color: rgba(0,0,0,0.6)
+        width: 1.7em
+        left: .1em
 
 @mixin content_editable
   border: 1px solid transparent
