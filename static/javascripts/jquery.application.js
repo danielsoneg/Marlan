@@ -1,5 +1,5 @@
 function createFolders(data,uid) {
-    $.each(data.folders, function(index, value){
+    $.each(data.folders, function(index, value){ 
         name = value.substring(value.lastIndexOf('/')+1);
         current = $('li.view_children ul').html()
         link = '<li><a href="/u'+uid + value + '">'+name+'</a></li>';
@@ -19,9 +19,11 @@ function createMedia(data,uid) {
         url = 'http://dl.dropbox.com/u/' + uid + value;
         name = value.substring(value.lastIndexOf('/')+1);
         //alert(url);
-        img = '<li><a href="'+ url + '">'+name+'</a></li>\n';
-        current = $('section.media_content ul').html();
-        $('section.media_content ul').html(current + img);
+        if (name != '.metadata') {
+            img = '<li><a href="'+ url + '">'+name+'</a></li>\n';
+            current = $('section.media_content ul').html();
+            $('section.media_content ul').html(current + img);
+        };
     });
 }
 

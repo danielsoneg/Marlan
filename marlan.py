@@ -85,7 +85,6 @@ class InfoHandler(BaseHandler):
         tpath = '/'.join([urllib.quote(p) for p in path.rstrip('/').split('/')])
         if re.match(r'u\d{5,6}/', path) != None:
             logging.info('hey, anon')
-            tpath = '/'.join([tornado.escape.url_escape(p) for p in path.rstrip('/').split('/')])
             uid = tpath[1:tpath.find('/')]
             tpath = tpath[tpath.find('/')+1:]
         else:
@@ -103,7 +102,7 @@ class InfoHandler(BaseHandler):
         else:
             content = bundles.linkify(response.body)
             self.write(content)
-        logging.info(content)
+        logging.info("Finishing...")
         self.finish()
 
 class PublicHandler(BaseHandler):
@@ -127,6 +126,7 @@ class PublicHandler(BaseHandler):
     @tornado.web.asynchronous
     def post(self,uid,path):
         logging.info('ASync-Posting ' + path)
+        path = '/'.join([urllib.quote(p) for p in path.rstrip('/').split('/')])
         url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/.metadata" % {'uid':uid,'path':path}
         logging.info(url)
         http = tornado.httpclient.AsyncHTTPClient()
@@ -138,7 +138,7 @@ class PublicHandler(BaseHandler):
             self.write(' ')
         else:
             self.write(response.body)
-        logging.info("Finishing...")
+        logging.info(response.body)
         self.finish()
 
     

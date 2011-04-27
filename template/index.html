@@ -46,9 +46,11 @@
           </li>
           <li class="children">
             <ul>
+              {% if not public %}
               <li class="add_child">
                 <input type="text" class="defaulted" value="new page" tabindex="1" /><button tabindex="2">&#187;</button>
               </li>
+              {% end %}
               {% if len(flist['folders']) != 0 or public %}
                 <li class="view_children">
                   <ul>
