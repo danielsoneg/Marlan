@@ -47,10 +47,12 @@ class Bundles(object):
     def listDir(self,resp):
         dirlist = {'folders':[],'files':[],'images':[],'has_info':False}
         for item in resp.data['contents']:
+            path = item['path']
+            path = rePublic.sub('/', path, 1)
             if item['path'].endswith('/info.txt'): dirlist['has_info'] = True
-            elif item['is_dir']: dirlist['folders'].append(item['path'].replace('/Public/','/',1))
-            elif item['mime_type'].startswith('image/'): dirlist['images'].append(item['path'])
-            else: dirlist['files'].append(item['path'])
+            elif item['is_dir']: dirlist['folders'].append(path)
+            elif item['mime_type'].startswith('image/'): dirlist['images'].append(path)
+            else: dirlist['files'].append(path)
         return dirlist
 
 class dropBoxFile( object ):
@@ -141,3 +143,4 @@ reLink   = re.compile(r'`(.*?)`', re.U)
 reUnlink = re.compile(r'<a href="(.*?)">(.*?)</a>', re.U)
 reUnspan = re.compile(r'<span .*?>(.*?)</span>', re.MULTILINE)
 reHref   = re.compile(r'''(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))''', re.U)
+rePublic = re.compile(r'\/public\/', re.IGNORECASE)
