@@ -1,7 +1,7 @@
 function createFolders(data,uid) {
     $.each(data.folders, function(index, value){ 
         name = value.substring(value.lastIndexOf('/')+1);
-        current = $('li.view_children ul').html()
+        current = $('li.view_children ul').html();
         link = '<li><a href="/u'+uid + value + '">'+name+'</a></li>';
         $('li.view_children ul').html(current + link);
     });
@@ -12,8 +12,8 @@ function createMedia(data,uid) {
         url = 'http://dl.dropbox.com/u/' + uid + value;
         //alert(url);
         img = '<li><a href="'+ url + '"><img src="'+url+'"></img></a></li>\n';
-        current = $('section.media_content ul').html();
-        $('section.media_content ul').html(current + img);
+        current = $('section.additional_content ul').html();
+        $('section.additional_content ul').html(current + img);
     });
     $.each(data.files, function(index,value){
         url = 'http://dl.dropbox.com/u/' + uid + value;
@@ -21,9 +21,9 @@ function createMedia(data,uid) {
         //alert(url);
         if (name != '.metadata') {
             img = '<li><a href="'+ url + '">'+name+'</a></li>\n';
-            current = $('section.media_content ul').html();
-            $('section.media_content ul').html(current + img);
-        };
+            current = $('section.additional_content ul').html();
+            $('section.additional_content ul').html(current + img);
+        }
     });
 }
 
@@ -77,7 +77,7 @@ function getInfo(url) {
 function pageLandingInteractions(){
     var url = window.location.pathname +'/info.txt';
     if ($('body').hasClass('public')) {
-    };
+    }
     getInfo(url);
 }
 
