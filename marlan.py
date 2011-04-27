@@ -15,6 +15,7 @@ except ImportError: import json
 import cStringIO
 import subprocess
 import urllib
+import time
 # Dropbox
 from dropbox import auth, client
 # Ours
@@ -95,6 +96,13 @@ class InfoHandler(BaseHandler):
         logging.info("Finishing...")
         self.finish()
 
+class test(object):
+    """docstring for test"""
+    def __init__(self, arg):
+        super(test, self).__init__()
+        self.arg = arg
+        
+
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def prepare(self):
@@ -117,7 +125,7 @@ class MainHandler(BaseHandler):
     def get_index(self, flist, path):
         title, paths = self.__processPath(path)
         self.render("template/index.html", title=title, paths=paths, flist=flist, uid=self.current_user)
-    
+        
     def __processPath(self, path):
         longp = ""
         path = path.rstrip('/')
@@ -138,10 +146,18 @@ class MainHandler(BaseHandler):
             raise tornado.web.HTTPError(400)
         if hasattr(self, 'post_%s' % action):
             status = getattr(self, 'post_%s' %action)(path)
-            self.write(status)
+            if status:
+                self.write(status)
+            else:
+                self.finish()
         else:
             logging.error('Asked for invalid action: %s' % action)
             raise tornado.web.HTTPError(400)
+    
+    def post_metadata(self,path):
+        logging.info('meta-data-ing')
+        self.Bundles.writeMetadata(path)
+        return
     
     def post_write(self,path):
         content = tornado.escape.xhtml_unescape(self.get_argument('text'))

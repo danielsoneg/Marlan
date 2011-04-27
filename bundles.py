@@ -30,9 +30,11 @@ class Bundles(object):
             ret['images'] = []
         return (t, ret)
     
-    def writeMetadata(self,path,info):
+    def writeMetadata(self,path):
+        (t, info) = self.getPath(path)
         meta = dropBoxFile(path,self.client,'.metadata')
         meta.write(json.dumps(info))
+        return
     
     def writeContent(self,path,content):
         info = dropBoxFile(path, self.client, 'info.txt')
@@ -46,7 +48,7 @@ class Bundles(object):
         dirlist = {'folders':[],'files':[],'images':[],'has_info':False}
         for item in resp.data['contents']:
             if item['path'].endswith('/info.txt'): dirlist['has_info'] = True
-            elif item['is_dir']: dirlist['folders'].append(item['path'].replace('/Public',''))
+            elif item['is_dir']: dirlist['folders'].append(item['path'].replace('/Public/','/',1))
             elif item['mime_type'].startswith('image/'): dirlist['images'].append(item['path'])
             else: dirlist['files'].append(item['path'])
         return dirlist

@@ -11,12 +11,18 @@ function swapContent(content) {
     // set header and body content
     $('.subhead_content').html(head);
     contentContainer.html(body);
-    
     // add class to style empty Content area
     if (contentContainer.text().length <= 3) {
       contentContainer.addClass('empty');
-      } else { contentContainer.removeClass('empty');
+      } else { 
+          contentContainer.removeClass('empty');
+          $.ajax({
+              type: 'POST',
+              url: window.location.pathname,
+              data: 'action=metadata',
+          });
     }
+    return;
 }
 
 function getInfo() {
