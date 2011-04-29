@@ -42,11 +42,6 @@ class Bundles(object):
         meta.write(info)
         return
     
-    def addPass(self,path,pw):
-        passfile = dropBoxFile(path, self.client, '.pass')
-        ret = passfile.rm() if pw == False else passfile.write(pw)
-        return ret
-    
     def writeContent(self,path,content):
         info = dropBoxFile(path, self.client, 'info.txt')
         return info.write(content)
