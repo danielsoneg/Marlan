@@ -8,6 +8,11 @@ import logging
 try: import simplejson as json
 except ImportError: import json
 
+debug = False
+class fakelog(object):
+    def info(self,arg): pass
+if not debug: logging = fakelog()
+
 class Bundles(object):
     def __init__(self, client):
         self.client = client
@@ -30,10 +35,11 @@ class Bundles(object):
             ret['images'] = []
         return (t, ret)
     
-    def writeMetadata(self,path):
+    def writeMetadata(self,path,pw,cypher):
         (t, info) = self.getPath(path)
         meta = dropBoxFile(path,self.client,'.metadata')
-        meta.write(json.dumps(info))
+        info = cypher.cryptInfo(pw,info)
+        meta.write(info)
         return
     
     def addPass(self,path,pw):

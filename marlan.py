@@ -17,12 +17,12 @@ import subprocess
 import urllib
 import time
 import re
-from hashlib import sha1
 # Dropbox
 from dropbox import auth, client
 # Ours
 from db import SQLite as db
 import bundles
+import cipher
 
 define("port", default=8000, help="run on the given port", type=int)
 
@@ -33,6 +33,8 @@ config = auth.Authenticator.load_config("config/config.ini")
 config.update(auth.Authenticator.load_config("config/apikeys.ini"))
 tokens = {}
 user_tokens = {}
+
+c = cipher.Cipher()
 
 class dbAuth(object):
     """docstring for dbAuth"""
@@ -128,45 +130,38 @@ class PublicHandler(BaseHandler):
     def post(self,uid,path):
         logging.info('ASync-Posting ' + path)
         pw = self.get_argument('pw', default=False)
+        logging.info('pw: %s' % pw)
+        logging.info('uid: %s' % uid)
+        self.op = path
         if not pw:
+            logging.info('Not PW')
             self.write('0')
             self.finish()
-        self.p = sha1("%s-%s" % (uid, pw)).hexdigest()
+        self.p = c.hsh("%s-%s" % (uid, pw))
+        logging.info('self.p: %s' % self.p)
         path = '/'.join([urllib.quote(p) for p in path.rstrip('/').split('/')])
         self.url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/" % {'uid':uid,'path':path}
-        url = self.url + '.pass'
-        logging.info(url)
-        http = tornado.httpclient.AsyncHTTPClient()
-        http.fetch(url, callback=self.on_response)
-
-    def on_response(self, response):
-        logging.info('gotResponse')
-        if response.error:
-            logging.error('Resp: %s' % response)
-            self.write('0')
-            self.finish()
-            return
-        logging.info(response.body)
-        if self.p != response.body:
-            logging.info(self.p)
-            self.write('0')
-            self.finish()
-            return
         url = self.url + '.metadata'
         logging.info(url)
         http = tornado.httpclient.AsyncHTTPClient()
-        http.fetch(url, callback=self.gotMetadata)
+        http.fetch(url, callback=self.on_response)
     
-    def gotMetadata(self, response):
-        if response.error:
+    def on_response(self, response):
+        logging.info('gotResponse')
+        logging.info(response.body)
+        logging.info('Key: %s' % self.p)
+        md = c.decryptInfo(self.p,response.body)
+        if md == False:
+            logging.info('No MD')
             self.write('0')
         else:
-            self.write(response.body)
+            self.write(md)
+            self.set_secure_cookie('pub',self.p,path=self.op)
         self.finish()
-        
-
+        return
     
-        
+
+
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def prepare(self):
@@ -223,14 +218,18 @@ class MainHandler(BaseHandler):
         uid = self.current_user
         p = False
         if pw != False:
-            p = sha1("%s-%s" % (uid, pw)).hexdigest()
-        ret = self.Bundles.addPass(path, p)
+            p = c.hsh("%s-%s" % (uid, pw))
+        self.set_secure_cookie('pub',p,path=path)
         return json.dumps({'Code':1})
         
     def post_metadata(self,path):
         logging.info('meta-data-ing')
-        self.Bundles.writeMetadata(path)
-        return
+        p = self.get_secure_cookie('pub')
+        if p:
+            self.Bundles.writeMetadata(path,p,c)
+            return "1"
+        else:
+            return "0"
     
     def post_write(self,path):
         content = tornado.escape.xhtml_unescape(self.get_argument('text'))

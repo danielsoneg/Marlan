@@ -38,7 +38,12 @@ function createMedia(data,uid) {
 }
 
 function passCallback(data) {
-    alert('Set Password');
+    $.ajax({
+        type: 'POST',
+        url: window.location.pathname,
+        data: 'action=metadata',
+        success: metadataCallback
+    });
 }
 
 function metadataCallback(data) {
