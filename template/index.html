@@ -58,8 +58,12 @@
       {% if len(flist['images']) != 0 or len(flist['files']) != 0 or len(flist['folders']) != 0 or public %}
         <section class="additional_content">
           {% if not public %}
-            <ul class='folders gopublic'>
-              <li>Public <input id='pw' type='password' value='{% if flist['has_pass'] %}password{% end %}'/></input><a id='pwgo'>go</a></li>
+            <ul class='password gopublic'>
+              <li>
+                Public
+                <input id='pw' type='password' value='{% if flist['has_pass'] %}password{% end %}'/></input>
+                <a id='pwgo'>go</a>
+              </li>
             </ul>
           {% end %}
           {% if len(flist['folders']) != 0 %}
