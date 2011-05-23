@@ -94,7 +94,6 @@ body
 
 a
   text-decoration: none
-  font-weight: bold
   &:link, &:visited
     color: #0f6def
   &:hover, &:focus
@@ -103,9 +102,6 @@ a
       decoration: underline
   &:active
     color: #e55117
-
-h1, h2, h3, h4, h5, h6, dt, legend
-  color: #181818
 
 $nav_height: 30px
 
@@ -284,6 +280,7 @@ $editable_padding: 10px 20px
   position: relative
   white-space: pre-wrap
   min-height: 10em
+  a
   &.empty
     min-height: 1em
 
@@ -347,7 +344,6 @@ article > aside
       transform: uppercase
       shadow: rgba(0,0,0,.8) 0 -1px 1px
   a
-    font-weight: normal
     &, &:link, &:visited
       color: $color_link_bright
     &:hover, &:active
@@ -358,15 +354,21 @@ article > aside
       left: 26px
     margin-bottom: 3px
     position: relative
-    min-height: 20px
-    line-height: 16px
+    min-height: 18px
+    line-height: 18px
+    @include border_radius(3px)
+    overflow: hidden
+    text-overflow: ellipsis
+    &:hover, &:focus
+      @include gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5))
+      text-decoration: none
     &:before
       position: absolute
-      left: 0
-      top: 2px
+      left: 4px
+      top: 4px
       content: ''
-      height: 18px
-      width: 18px
+      height: 16px
+      width: 16px
       background:
         position: 0 0
         repeat: no-repeat
@@ -392,12 +394,16 @@ article > aside
       @include opacity(0.7)
       &:hover, &:focus
         @include opacity(1)
-        background-image: url("../images/info_hover.png")
+        background:
+          color: rgba(0,0,0,0.5)
+          image: url("../images/info_hover.png")
         border-color: $color_link_bright
     &.active
       span
         @include opacity(1)
-        background-image: url("../images/info_active.png")
+        background:
+          color: rgba(0,0,0,0.5)
+          image: url("../images/info_active.png")
         border-color: #fff6a3
       p
         color: #353535
@@ -432,20 +438,21 @@ article > aside
       height: 100%
       width: 100%
       overflow: hidden
-      @include border_radius(2px)
-      background: #000
-      border: 2px solid #000
+      @include gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.1))
+      border: 2px solid transparent
       &:hover, &:focus
         border-color: $color_link_bright
     //&:first-child,
     &.active
-      width: 196px
-      margin:
-        right: 0
-      height: 100px
+      width: 100%
+      margin: 20px 0
+      height: auto
+      max-height: 100px
+      overflow: hidden
       a
-        border-color: #000
+        border: none
     img
+      display: block
       width: 100%
 
 .image_viewer
@@ -468,14 +475,23 @@ article > aside
     left: 13px + 240px
     top: 13px + $nav_height
   li
-    border: 2px solid #fff
-    height: 24px
-    line-height: 24px
-    @include border_radius(12px)
-    font-size: 12px
     display: inline-block
     margin: 0
       right: 14px
+    font-size: 18px
+    height: 24px
+    line-height: 24px
+    color: #fff
+  .title
+    margin-top: 2px
+    max-width: 300px
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+  .action
+    border: 2px solid #fff
+    @include border_radius(12px)
+    font-size: 12px
     @include opacity(.4)
     &, a
       padding: 0 10px

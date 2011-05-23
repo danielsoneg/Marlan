@@ -62,10 +62,10 @@
       <header class="article_header">
         <hgroup>
           <h1>{{ title }}</h1>
-          <h2 {% if not public %} contenteditable='true' {% end %}></h2>
+          <h2 {% if not public %} contenteditable='true' {% end %} tabindex="1"></h2>
         </hgroup>
       </header>
-      <section class="text_content" {% if not public %} contenteditable='true' {% end %}></section>
+      <section class="text_content" {% if not public %} contenteditable='true' {% end %} tabindex="1"></section>
     </div>
 
     {% if len(flist['images']) != 0 or len(flist['files']) != 0 or len(flist['folders']) != 0 or public %}
@@ -76,7 +76,7 @@
             <ol>
               {% for folder in flist['folders'] %}
                 <li>
-                  <a href="{{ folder }}">{{ folder[folder.rfind('/')+1:] }}</a>
+                  <a href="{{ folder }}" title="GO TO: {{ folder[folder.rfind('/')+1:] }}">{{ folder[folder.rfind('/')+1:] }}</a>
                 </li>
               {% end %}
             </ol>
@@ -94,7 +94,7 @@
             <ul>
               {% for image in flist['images'] %}
                 <li>
-                  <a href="http://dl.dropbox.com/u/{{ uid }}{{ image }}" title="view image full size"><img src="http://dl.dropbox.com/u/{{ uid }}{{ image }}"></a>
+                  <a href="http://dl.dropbox.com/u/{{ uid }}{{ image }}" title="{{ image[image.rfind('/')+1:] }}"><img src="http://dl.dropbox.com/u/{{ uid }}{{ image }}"></a>
                 </li>
               {% end %}
             </ul>
@@ -106,12 +106,12 @@
             <h1>Files</h1>
             <div class="info">
               <span>info</span>
-              <p><strong>Note:</strong> files are downloaded or viewed in-browser based on your settings and the file type.</p>
+              <p><strong>Files are downloaded or viewed</strong> based on your computer/browser settings and the file type.</p>
             </div>
             <ul>
               {% for file in flist['files'] %}
                 <li>
-                  <a href="http://dl.dropbox.com/u/{{ uid }}{{ file }}" title="view full size">{{ file[file.rfind('/')+1:] }}</a>
+                  <a href="http://dl.dropbox.com/u/{{ uid }}{{ file }}" title="DOWNLOAD: {{ file[file.rfind('/')+1:] }}">{{ file[file.rfind('/')+1:] }}</a>
                 </li>
               {% end %}
             </ul>

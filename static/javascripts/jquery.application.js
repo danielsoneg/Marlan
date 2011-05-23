@@ -205,19 +205,23 @@ jQuery(document).ready(function($) {
   var images = $('.images', aside);
   $('li:not(.active)', images).live('click', function(e){
     _closeImage();
+
+    var imageSrc = $('img', this).attr('src');
+    var imageTitle = $('img', this).closest('a').attr('title');
     $(this).addClass('active');
     articleContent.hide();
     $('.image_viewer').remove();
-    var imageSrc = $('img', this).attr('src');
     article.prepend(
       '<div class="image_viewer">' +
         '<ul>' +
-          '<li class="close">close image</li>' +
-          '<li class="direct"><a href="' + imageSrc + '">direct link to image</a></li>' +
+          '<li class="title">' + imageTitle + '</li>' +
+          '<li class="close action">close image</li>' +
+          '<li class="direct action"><a href="' + imageSrc + '">direct link to image</a></li>' +
         '</ul>' +
         '<img src="' + imageSrc + '" />' +
       '</div>'
     );
+    $('.image_viewer img').fadeIn();
     e.preventDefault();
   });
   // close image 
