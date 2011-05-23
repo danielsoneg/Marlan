@@ -183,16 +183,15 @@ jQuery(document).ready(function($) {
     var newPage = $('input', createPage).val();
     window.location=window.location.pathname+'/'+newPage;
   });
-  $('input', createPage).hover(function(){
+  $('input', createPage).focus(function(){
     $('input', createPage).stop().addClass('active').animate({'width':'150px'}, 200);
     setTimeout(function(){
       $('button', createPage).fadeIn(50);
     }, 150);
-  }, function(){
-    setTimeout(function(){
-      $('input', createPage).stop().removeClass('active').animate({'width':createPageWidth}, 200);
-      $('button', createPage).fadeOut(50);      
-    }, 4000);
+  });
+  $('input', createPage).blur(function(){
+    $('input', createPage).stop().removeClass('active').animate({'width':createPageWidth}, 200);
+    $('button', createPage).fadeOut(50);
   });
   
   // show files info

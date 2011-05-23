@@ -43,7 +43,7 @@
   &:before
     content: ""
     position: absolute
-    left: 0
+    right: 0
     top: -8px
     width: 0
     height: 0
@@ -125,7 +125,7 @@ body > nav
     position: relative
   ol
     @include clearfix
-    margin-left: 40px
+    margin-left: 10px
     width: auto
     color: #252525
   li
@@ -136,12 +136,12 @@ body > nav
     white-space: nowrap
     overflow: hidden
     text-overflow: ellipsis
-    &:after
+    &:before
       content: '>'
-      display: inline-block
-      padding: 0 .3em
+      float: left
+      padding: 0 .5em
       color: rgba(0,0,0,0.4)
-    &:last-child:after
+    &:first-child:before
       display: none
   a
     &, &:link, &:visited
@@ -173,10 +173,11 @@ body > nav
     @include reset_box
     @include mini_button
     position: absolute
-    top: 5px
-    right: -30px
+    top: 7px
+    right: 1px
     width: 30px
-    height: $nav_height - (5px * 2)
+    height: $nav_height - 1px - (6px * 2)
+    line-height: $nav_height - (7px * 2)
     text-align: center
     font:
       weight: bold
@@ -186,10 +187,12 @@ body > nav
       left: .6em
     @include border_radius(2px)
 .security
-  float: left
+  float: right
+  position: relative
+  z-index: 5
   width: $nav_height
   height: $nav_height
-  border-right: 1px solid rgba(0,0,0,0.1)
+  border-left: 1px solid rgba(0,0,0,0.1)
   span
     overflow: hidden
     text-indent: -9999px
@@ -202,8 +205,10 @@ body > nav
       cursor: pointer
   form
     @include content_overlay
-    left: 5px
+    right: 5px
     top: ($nav_height + 3px)
+    white-space: nowrap
+    width: auto
     label
       padding-right: .5em
     input
@@ -212,7 +217,7 @@ body > nav
       &, &:hover, &:active, &:focus
         background: #fff
     button
-      top: 15px
+      top: 16px
       right: 10px
 
   &.active
@@ -222,6 +227,7 @@ body > nav
       display: block
 .create_page
   overflow: visible
+  max-width: none
   button
     display: none
 
@@ -246,7 +252,7 @@ $editable_padding: 10px 20px
     right: 20px
     content: ""
     height: 1px
-    @include opacity(.3)
+    @include opacity(.5)
   &:before
     bottom: 0
     background-image: -webkit-linear-gradient(0deg,transparent,rgba(0,0,0,0.1),transparent)
@@ -379,7 +385,7 @@ article > aside
   .info
     position: absolute
     right: 20px
-    top: 16px
+    top: 15px
     p
       @include content_overlay
     span
