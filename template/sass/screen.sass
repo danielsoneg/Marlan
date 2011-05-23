@@ -125,7 +125,7 @@ body > nav
     position: relative
   ol
     @include clearfix
-    margin-left: 10px
+    margin-left: 4px
     width: auto
     color: #252525
   li
@@ -141,13 +141,15 @@ body > nav
       float: left
       padding: 0 .5em
       color: rgba(0,0,0,0.4)
-    &:first-child:before
-      display: none
+    &:first-child, &:nth-child(2)
+      &:before
+        display: none
   a
     &, &:link, &:visited
       color: #666
     &:hover, &:focus
       color: $color_link
+      text-decoration: none
   input
     @include reset_box
     margin: 5px 0
@@ -186,6 +188,35 @@ body > nav
     padding: 0 .5em
       left: .6em
     @include border_radius(2px)
+.public
+  margin-left: 10px
+.parent
+  a
+    float: left
+    height: $nav_height - 6px
+    line-height: $nav_height - 6px
+    margin: 2px 0 0
+    font-size: 10px
+    text:
+      transform: uppercase
+      decoration: none
+    padding: 0 10px
+    @include border_radius(3px)
+    border: 1px solid rgba(0,0,0,0.2)
+      bottom-color: rgba(0,0,0,0.4)
+    @include gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.1))
+    box-shadow: rgba(0,0,00,0.1) 0 -1px 1px, inset rgba(255,255,255,0.1) 0 1px 1px
+    &:hover, &:focus
+      background: $color_link_bright
+      color: #fff
+      border:
+        color: rgba(0,0,0,0.1)
+        top-color: rgba(0,0,0,0.2)
+.create_page
+  overflow: visible
+  max-width: none
+  button
+    display: none
 .security
   float: right
   position: relative
@@ -225,11 +256,6 @@ body > nav
       background-image: url("../images/lock_active.png")
     form
       display: block
-.create_page
-  overflow: visible
-  max-width: none
-  button
-    display: none
 
 article
   position: absolute
@@ -286,7 +312,6 @@ $editable_padding: 10px 20px
   position: relative
   white-space: pre-wrap
   min-height: 10em
-  a
   &.empty
     min-height: 1em
 
@@ -352,7 +377,6 @@ article > aside
   a
     &, &:link, &:visited
       color: $color_link_bright
-    &:hover, &:active
 .folders, .files
   a
     display: block
@@ -364,14 +388,16 @@ article > aside
     line-height: 18px
     @include border_radius(3px)
     overflow: hidden
+    border: 1px solid transparent
     text-overflow: ellipsis
     &:hover, &:focus
       @include gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5))
+      border-color: $color_link_bright
       text-decoration: none
     &:before
       position: absolute
-      left: 4px
-      top: 4px
+      left: 5px
+      top: 5px
       content: ''
       height: 16px
       width: 16px
@@ -395,7 +421,7 @@ article > aside
       @include border_radius(9px)
       text-indent: -9999px
       cursor: pointer
-      border: 1px solid #000
+      border: 1px solid rgba(0,0,0,0.5)
       background: url("../images/info.png") -1px 0 no-repeat
       @include opacity(0.7)
       &:hover, &:focus
@@ -518,7 +544,10 @@ article > aside
         top: 2px
         bottom: 2px
   img
+    max-width: 80%
     margin: 0 auto
+    &.full_size
+      max-width: none
 
 //@media screen and (min-width:480px)
 //

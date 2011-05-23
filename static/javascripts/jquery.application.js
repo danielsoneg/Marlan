@@ -127,6 +127,14 @@ jQuery(document).ready(function($) {
   nav = $('body > nav');
   aside = $('aside', article);
   
+  if ($('li.item', nav).length < 2) {
+    $('.parent', nav).hide();
+  }
+  // breadcrumb go up one level
+  var parent = $('.current', nav).prev();
+  var parentUrl = $('a', parent).attr('href');
+  $('.parent a', nav).attr('href',parentUrl);
+  
   // expand content width if no asides
   if((aside).length === 0) {
     article.css({'left':'0'});
@@ -216,11 +224,24 @@ jQuery(document).ready(function($) {
           '<li class="title">' + imageTitle + '</li>' +
           '<li class="close action">close image</li>' +
           '<li class="direct action"><a href="' + imageSrc + '">direct link to image</a></li>' +
+          '<li class="size action"><a href="#">view original size</a></li>' +
         '</ul>' +
         '<img src="' + imageSrc + '" />' +
       '</div>'
     );
     $('.image_viewer img').fadeIn();
+    e.preventDefault();
+  });
+  // resize_image
+  $('.image_viewer .size a').live('click', function(e){
+    var image = $('.image_viewer img');
+    var fullSize = 'full_size';
+    if(image.attr('class') == fullSize) {
+      $('.image_viewer .size a').text('view original size');
+    } else {
+      $('.image_viewer .size a').text('fit to screen');
+    }
+    image.toggleClass(fullSize);
     e.preventDefault();
   });
   // close image 
@@ -237,5 +258,4 @@ jQuery(document).ready(function($) {
     _closeImage();
     e.preventDefault();
   });
-  
 });

@@ -37,15 +37,18 @@
       </div>
     {% end %}
     <ol>
-      <li>
+      <li class="parent">
+        <a href="#">Parent</a>
+      </li>
+      <li class="item public">
         <a href='/' title="Public">Public</a>
       </li>
       {% for path in paths %}
-        <li>
+        <li class="item">
           <a href="{{ path }}" title="{{ path }}">{{ path[path.rfind('/')+1:] }}</a>
         </li>
       {% end %}
-      <li>
+      <li class="current">
         {{title}}
       </li>
       {% if not public %}
