@@ -76,7 +76,7 @@
             <ol>
               {% for folder in flist['folders'] %}
                 <li>
-                  <a href="{{ folder }}" title="GO TO: {{ folder[folder.rfind('/')+1:] }}">{{ folder[folder.rfind('/')+1:] }}</a>
+                  <a href="{{ folder }}" title="{{ folder[folder.rfind('/')+1:] }}">{{ folder[folder.rfind('/')+1:] }}</a>
                 </li>
               {% end %}
             </ol>
@@ -111,7 +111,7 @@
             <ul>
               {% for file in flist['files'] %}
                 <li>
-                  <a href="http://dl.dropbox.com/u/{{ uid }}{{ file }}" title="DOWNLOAD: {{ file[file.rfind('/')+1:] }}">{{ file[file.rfind('/')+1:] }}</a>
+                  <a href="http://dl.dropbox.com/u/{{ uid }}{{ file }}" title="{{ file[file.rfind('/')+1:] }}">{{ file[file.rfind('/')+1:] }}</a>
                 </li>
               {% end %}
             </ul>
