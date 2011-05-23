@@ -212,8 +212,8 @@ jQuery(document).ready(function($) {
     article.prepend(
       '<div class="image_viewer">' +
         '<ul>' +
-          '<li class="close">Close Image</li>' +
-          '<li class="direct"><a href="' + imageSrc + '">Direct Link</a></li>' +
+          '<li class="close">close image</li>' +
+          '<li class="direct"><a href="' + imageSrc + '">direct link to image</a></li>' +
         '</ul>' +
         '<img src="' + imageSrc + '" />' +
       '</div>'

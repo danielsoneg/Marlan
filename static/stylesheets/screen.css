@@ -698,7 +698,8 @@ article > aside {
     -moz-background-clip: padding-box;
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
-    border: 2px solid rgba(255, 255, 255, 0.5); }
+    background: black;
+    border: 2px solid black; }
     .images li a:hover, .images li a:focus {
       border-color: #3399ff; }
   .images li.active {
@@ -706,7 +707,7 @@ article > aside {
     margin-right: 0;
     height: 100px; }
     .images li.active a {
-      border-color: #fff6a3; }
+      border-color: black; }
   .images li img {
     width: 100%; }
 
