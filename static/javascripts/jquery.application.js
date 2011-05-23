@@ -1,40 +1,40 @@
 function createFolders(data,uid) {
     if (data.folders.length > 0) {
-        var html = "<ul class='folders'>";
+        var asideContents = "<ol class='folders'>";
         $.each(data.folders, function(index, value){ 
             name = value.substring(value.lastIndexOf('/')+1);
             link = "\n<li><a href='/u"+uid + value + "'>"+name+'</a></li>';
-            html = html + link;
+            asideContents = asideContents + link;
         });
-        html = html + "\n</ul>";
-        $('section.additional_content').html(html);
+        asideContents = asideContents + "\n</ul>";
+        aside.html(asideContents);
     }
 }
 
 function createMedia(data,uid) {
-    var html = $('section.additional_content').html();
+    var asideContents = aside.html();
     if (data.files.length > 0) {
-        html = html + '\n<ul class="files">';
+        asideContents = asideContents + '\n<ul class="files">';
         $.each(data.files, function(index,value){
             url = 'http://dl.dropbox.com/u/' + uid + value;
             name = value.substring(value.lastIndexOf('/')+1);
             //alert(url);
             link = '<li><a href="'+ url + '">'+name+'</a></li>\n';
-            html = html + link;
+            asideContents = asideContents + link;
         });
-        html = html + '\n</ul>';
+        asideContents = asideContents + '\n</ul>';
     }
     if (data.images.length > 0) {
-        html = html + '\n<ul class="images">';
+        asideContents = asideContents + '\n<ul class="images">';
         $.each(data.images, function(index, value){
             url = 'http://dl.dropbox.com/u/' + uid + value;
             //alert(url);
             img = '<li><a href="'+ url + '"><img src="'+url+'"></img></a></li>\n';
-            html = html + img;
+            asideContents = asideContents + img;
         });
-        html = html + "\n</ul>";
+        asideContents = asideContents + "\n</ul>";
     }
-    $('section.additional_content').html(html);
+    aside.html(asideContents);
 }
 
 function passCallback(data) {
@@ -67,7 +67,6 @@ function metadataCallback(data) {
 function swapContent(content) {
     var head = "";
     var body = content;
-    var contentContainer = $('.text_content');
     if (content.indexOf("~~~~") >= 0) {
         content = content.split("~~~~",2);
         head = content[0].trim();
@@ -75,13 +74,13 @@ function swapContent(content) {
     }
     
     // set header and body content
-    $('.subhead_content').html(head);
-    contentContainer.html(body);
+    articleSubhead.html(head);
+    articleText.html(body);
     // add class to style empty Content area
-    if (contentContainer.text().length <= 3) {
-      contentContainer.addClass('empty');
+    if (articleText.text().length <= 3) {
+      articleText.addClass('empty');
       } else { 
-          contentContainer.removeClass('empty');
+          articleText.removeClass('empty');
           if ($('body').hasClass('private')){
               $.ajax({
                   type: 'POST',
@@ -119,51 +118,56 @@ function editCallback(data) {
 
 jQuery(document).ready(function($) {
   var pageLanding = new pageLandingInteractions();
+  article = $('article');
+  articleContent = $('.content', article);
+  articleHeader = $('.article_header', article);
+  articleSubhead = $('h2', articleHeader);
+  articleText = $('.text_content', article);
+  contentEditable = $('*[contenteditable="true"]', article);
+  nav = $('body > nav');
+  aside = $('aside', article);
   
-  $('body').noisy({
-    opacity: 0.07
-  });
-  
-  // create and show Finish Edit button when editing a textarea
-  $('.text_content[contenteditable="true"], .subhead_content[contenteditable="true"]').focus(function() {
-    $('article').prepend("<div class='finish_edit'>finish edit</div>");
-  });
-  
+  // expand content width if no asides
+  if((aside).length === 0) {
+    article.css({'left':'0'});
+  }
+    
   // save content on click out of content editable area
-  $('.text_content[contenteditable="true"], .subhead_content[contenteditable="true"]').blur(function() {
-      var content = $('.text_content').html().trim();
-      if ($('.subhead_content').html() !== "") {
-          content = $('.subhead_content').html().trim() + "\n~~~~\n" + content;
-      }
-      $.ajax({
-         type: "POST",
-         url: window.location.pathname,
-         data: "text=" + escape(content) + "&action=write",
-         success: editCallback
-      });
-      // hide then remove Finish Edit button
-      $('.finish_edit').fadeOut(300);
-      setTimeout(function(){
-        $('.finish_edit').remove();
-      }, 300);
+  contentEditable.blur(function() {
+    var content = articleText.html().trim();
+    if (articleSubhead.html() !== "") {
+      content = articleSubhead.html().trim() + "\n~~~~\n" + content;
+    }
+    $.ajax({
+     type: "POST",
+     url: window.location.pathname,
+     data: "text=" + escape(content) + "&action=write",
+     success: editCallback
+    });
   });
   
   // force Content links to go to URL on click instead of edit content
-  $('*[contenteditable="true"] a').live('click', function(){
+  $('a', contentEditable).live('click', function(){
     window.location=$(this).attr('href');
   });
   
-  $('a#pwgo').click(function(){
-      var pass = '' + $('input#pw').val();
-      $.ajax({
-         type: "POST",
-         url: window.location.pathname,
-         data: "pw=" + escape(pass) + "&action=public",
-         success: passCallback
-      });
+  // security
+  var security = $('.security', nav);
+  $('span', security).click(function(){
+    security.toggleClass('active');
+    $('body').toggleClass('overlay');
   });
-  $('a#pubgo').click(function(){
-      var pass = '' + $('input#pw').val();
+  $('#pwgo').click(function(){
+    var pass = '' + $('#pw').val();
+    $.ajax({
+      type: "POST",
+      url: window.location.pathname,
+      data: "pw=" + escape(pass) + "&action=public",
+      success: passCallback
+    });
+  });
+  $('#pubgo').click(function(){
+      var pass = '' + $('#pw').val();
       $.ajax({
           type: 'POST',
           url: window.location.pathname,
@@ -172,19 +176,63 @@ jQuery(document).ready(function($) {
       });
   });
   
-  // breadcrumb create page
-  var breadcrumbs = $('.breadcrumbs');
-  $('input', breadcrumbs).focus(function(){
-    $('button', breadcrumbs).show();
-  });
-  $('input', breadcrumbs).blur(function(){
-    setTimeout(function(){
-      $('button', breadcrumbs).fadeOut(1000);
-    }, 1500);
-  });
-  $('button', breadcrumbs).click(function(){
-    var newPage = $('input', breadcrumbs).val();
+  // create page
+  var createPage = $('.create_page', nav);
+  var createPageWidth = $('input', createPage).width();
+  $('button', createPage).click(function(){
+    var newPage = $('input', createPage).val();
     window.location=window.location.pathname+'/'+newPage;
+  });
+  $('input', createPage).hover(function(){
+    $('input', createPage).stop().addClass('active').animate({'width':'150px'}, 200);
+    setTimeout(function(){
+      $('button', createPage).fadeIn(50);
+    }, 150);
+  }, function(){
+    setTimeout(function(){
+      $('input', createPage).stop().removeClass('active').animate({'width':createPageWidth}, 200);
+      $('button', createPage).fadeOut(50);      
+    }, 4000);
+  });
+  
+  // show files info
+  var info = $('.info', aside);
+  info.click(function(){
+    info.toggleClass('active');
+  });
+  
+  // image click
+  var images = $('.images', aside);
+  $('li:not(.active)', images).live('click', function(e){
+    _closeImage();
+    $(this).addClass('active');
+    articleContent.hide();
+    $('.image_viewer').remove();
+    var imageSrc = $('img', this).attr('src');
+    article.prepend(
+      '<div class="image_viewer">' +
+        '<ul>' +
+          '<li class="close">Close Image</li>' +
+          '<li class="direct"><a href="' + imageSrc + '">Direct Link</a></li>' +
+        '</ul>' +
+        '<img src="' + imageSrc + '" />' +
+      '</div>'
+    );
+    e.preventDefault();
+  });
+  // close image 
+  var _closeImage = function(){
+    $('li', images).removeClass('active');
+    $('.image_viewer').remove();
+    articleContent.show();
+  };
+  $('.active', images).live('click', function(e){
+    _closeImage();
+    e.preventDefault();
+  });
+  $('.image_viewer .close').live('click', function(e){
+    _closeImage();
+    e.preventDefault();
   });
   
 });

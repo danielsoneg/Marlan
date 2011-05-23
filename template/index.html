@@ -23,117 +23,108 @@
 
 </head>
 
-<body id="page_landing" {% if public %}class='public'{% else %}class='private'{% end %}>
+<body {% if public %}class='public'{% else %}class='private'{% end %}>
+
+  <nav id="primary_nav">
+    {% if not public %}
+      <div class="security">
+        <span>Security</span>
+        <form>
+          <label>{% if flist['has_pass'] %}Set {% end %}Password:</label>
+          <input id='pw' type='password' value='{% if flist['has_pass'] %}password{% end %}'/></input>
+          <button id="pwgo">Go</button>
+        </form>
+      </div>
+    {% end %}
+    <ol>
+      <li>
+        <a href='/' title="Public">Public</a>
+      </li>
+      {% for path in paths %}
+        <li>
+          <a href="{{ path }}" title="{{ path }}">{{ path[path.rfind('/')+1:] }}</a>
+        </li>
+      {% end %}
+      <li>
+        {{title}}
+      </li>
+      {% if not public %}
+        <li class="create_page">
+          <input type="text" class="defaulted" value="new page" />
+          <button>&#187;</button>
+        </li>
+      {% end %}
+    </ol>
+  </nav>
 
   <article>
-    <header id="header_primary">
-      <hgroup>
-        <h1>{{ title }}</h1>
-        <h2 class='subhead_content' {% if not public %} contenteditable='true' {% end %} tabindex="1"></h2>
-      </hgroup>
-      <nav class="breadcrumbs">
-        <ol>
-          <li>
-            <a tabindex="3" href='/' title="Public">Public</a>
-          </li>
-          {% for path in paths %}
-            <li>
-              <a tabindex="3" href="{{ path }}" title="{{ path }}">{{ path[path.rfind('/')+1:] }}</a>
-            </li>
-          {% end %}
-          <li>
-            {{title}}
-          </li>
-          {% if not public %}
-            <li class="add_child">
-              <input type="text" class="defaulted" value="new page" tabindex="3" /><button tabindex="4">&#187;</button>
-            </li>
-          {% end %}
-        </ol>
-      </nav>
-      <div class="background"></div>
-    </header>
-
     <div class="content">
-      {% if len(flist['images']) != 0 or len(flist['files']) != 0 or len(flist['folders']) != 0 or public %}
-        <section class="additional_content">
-          {% if not public %}
-            <ul class='password gopublic'>
-              <li>
-                Public
-                <input id='pw' type='password' value='{% if flist['has_pass'] %}password{% end %}'/></input>
-                <a id='pwgo'>go</a>
-              </li>
-            </ul>
-          {% end %}
-          {% if len(flist['folders']) != 0 %}
-            <ul class="folders">
+      <header class="article_header">
+        <hgroup>
+          <h1>{{ title }}</h1>
+          <h2 {% if not public %} contenteditable='true' {% end %}></h2>
+        </hgroup>
+      </header>
+      <section class="text_content" {% if not public %} contenteditable='true' {% end %}></section>
+    </div>
+
+    {% if len(flist['images']) != 0 or len(flist['files']) != 0 or len(flist['folders']) != 0 or public %}
+      <aside>
+        {% if len(flist['folders']) != 0 %}
+          <section class="folders">
+            <h1>Folders</h1>
+            <ol>
               {% for folder in flist['folders'] %}
                 <li>
-                  <a tabindex="5" href="{{ folder }}">{{ folder[folder.rfind('/')+1:] }}</a>
+                  <a href="{{ folder }}">{{ folder[folder.rfind('/')+1:] }}</a>
                 </li>
               {% end %}
-            </ul>
-          {% end %}
-          {% if len(flist['files']) != 0 %}
-            <ul class="files">
-              {% for file in flist['files'] %}
-                <li>
-                  <a tabindex="5" href="http://dl.dropbox.com/u/{{ uid }}{{ file }}" title="view full size">{{ file[file.rfind('/')+1:] }}</a>
-                </li>
-              {% end %}
-            </ul>
-          {% end %}
-          {% if len(flist['images']) != 0 %}
-            <ul class="images">
+            </ol>
+          </section>
+        {% end %}
+        {% if len(flist['images']) != 0 %}
+          <section class="images">
+            <h1>Images</h1>
+            <div class="controls">
+              <button rel="previous" title="View previous image">Previous</button>
+              <button rel="theme" title="Toggle light/dark image viewing theme">Toggle Theme</button>
+              <button rel="next" title="View next image">Next</button>
+              <button rel="grid_side" title="Toggle small/large image grid">Grid Size</button>
+            </div>
+            <ul>
               {% for image in flist['images'] %}
                 <li>
-                  <a tabindex="5" href="http://dl.dropbox.com/u/{{ uid }}{{ image }}" title="view full size"><img src="http://dl.dropbox.com/u/{{ uid }}{{ image }}"></a>
+                  <a href="http://dl.dropbox.com/u/{{ uid }}{{ image }}" title="view image full size"><img src="http://dl.dropbox.com/u/{{ uid }}{{ image }}"></a>
                 </li>
               {% end %}
             </ul>
-          {% end %}
-        </section>
-      {% end %}
-      <section class="text_content" {% if not public %} contenteditable='true' {% end %} tabindex="2">
-        {% if public %}<h2>Password</h2><form><input type='password' id='pw'></input><a id='pubgo'>go</a></form>{% end %}
-      </section>
-      <nav class="view_mode">
-        <ul>
-          <li class="document">
-            <a href="#">
-              <span><span></span></span>
-              <div>Document</div>
-            </a>
-          </li>
-          <li class="grid">
-            <a href="#">
-              <span></span><span></span>
-              <div>Grid</div>
-            </a>
-          </li>
-          <li class="slideshow">
-            <a href="#">
-              <span></span>
-              <div>Slideshow</div>
-            </a>
-          </li>
-          <li class="spacetraveller">
-            <a href="#">
-              <span></span>
-              <div>Travel Through Space and Time</div>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+          </section>
+        {% end %}
+
+        {% if len(flist['files']) != 0 %}
+          <section class="files">
+            <h1>Files</h1>
+            <div class="info">
+              <span>info</span>
+              <p><strong>Note:</strong> files are viewed in-browser <em>(based on your settings and the file type)</em> or downloaded.</p>
+            </div>
+            <ul>
+              {% for file in flist['files'] %}
+                <li>
+                  <a href="http://dl.dropbox.com/u/{{ uid }}{{ file }}" title="view full size">{{ file[file.rfind('/')+1:] }}</a>
+                </li>
+              {% end %}
+            </ul>
+          </section>
+        {% end %}
+      </aside>
+    {% end %}
 
   </article>
 
   <!-- Javascripts live at the end -->
   <script src="/static/javascripts/libs/jquery.1.5.2.min.js"></script>
   <script src="/static/javascripts/plugins/jquery.defaulted.js"></script>
-  <script src="/static/javascripts/plugins/jquery.noisy.oct10.2010.js"></script>
   <script src="/static/javascripts/jquery.application.js"></script>
   {% if public %}<script src='/static/javascripts/jquery.public.js'></script>{% end %}
 
