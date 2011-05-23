@@ -12,7 +12,7 @@ function createFolders(data,uid) {
 }
 
 function createMedia(data,uid) {
-    var html = $('section.additional_content').html()
+    var html = $('section.additional_content').html();
     if (data.files.length > 0) {
         html = html + '\n<ul class="files">';
         $.each(data.files, function(index,value){
@@ -47,7 +47,7 @@ function passCallback(data) {
 }
 
 function metadataCallback(data) {
-    if (data == 0) {
+    if (data === 0) {
         //Incorrect Password Stuff Goes Here
         alert('Wrong Pass!');
     }
@@ -60,7 +60,7 @@ function metadataCallback(data) {
         if ($('body').hasClass('public')) {
             var url = window.location.pathname +'/info.txt';
             getInfo(url);
-        };
+        }
     }        
 }
 
@@ -124,7 +124,7 @@ jQuery(document).ready(function($) {
     opacity: 0.07
   });
   
-  // show "finish edit" target when editing
+  // create and show Finish Edit button when editing a textarea
   $('.text_content[contenteditable="true"], .subhead_content[contenteditable="true"]').focus(function() {
     $('article').prepend("<div class='finish_edit'>finish edit</div>");
   });
@@ -141,6 +141,7 @@ jQuery(document).ready(function($) {
          data: "text=" + escape(content) + "&action=write",
          success: editCallback
       });
+      // hide then remove Finish Edit button
       $('.finish_edit').fadeOut(300);
       setTimeout(function(){
         $('.finish_edit').remove();
