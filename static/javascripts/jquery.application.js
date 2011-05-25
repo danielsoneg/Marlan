@@ -135,6 +135,7 @@ jQuery(document).ready(function($) {
   contentEditable = $('*[contenteditable="true"]', article);
   nav = $('body > nav');
   aside = $('aside', article);
+  var images = $('.images', aside);
   
   if ($('li.item', nav).length < 2) {
     $('.parent', nav).hide();
@@ -230,15 +231,15 @@ jQuery(document).ready(function($) {
   });
   
   // image click
-  var images = $('.images', aside);
   $('li:not(.active)', images).live('click', function(e){
+    // close any images open already
     _closeImage();
-
+    // set clicked image as active
+    $(this).addClass('active');
+    // create image viewer
+    articleContent.hide();
     var imageSrc = $('img', this).attr('src');
     var imageTitle = $('img', this).closest('a').attr('title');
-    $(this).addClass('active');
-    articleContent.hide();
-    $('.image_viewer').remove();
     article.prepend(
       '<div class="image_viewer">' +
         '<ul>' +
