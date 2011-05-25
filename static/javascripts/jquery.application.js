@@ -151,14 +151,23 @@ jQuery(document).ready(function($) {
     article.css({'left':'0'});
   }
 
+  // paired with a fadeIn above, .hide() prevents a flash on content save
   contentEditable.hide();
+  
+  // show Finish Editing button when editing
   contentEditable.focus(function() {
     $('.reading_time', article).hide();
     $(article).prepend('<div class="finish_editing" tabindex="2">Finish Editing</div>');
   });
+
   // save content on click out of content editable area
   contentEditable.blur(function() {
+    // hide Finish Editing button
     $('.finish_editing').fadeOut(300);
+    setTimeout(function(){
+      $('.finish_editing').remove();
+    }, 300);
+    // save content
     var content = articleText.html().trim();
     if (articleSubhead.html() !== "") {
       content = articleSubhead.html().trim() + "\n~~~~\n" + content;
