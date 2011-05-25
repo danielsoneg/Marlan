@@ -92,14 +92,12 @@ function swapContent(content) {
     }
     // estimate reading time
     var wordCount = ($('.text_content', article).text().length / 5);
-    var minutes = (wordCount / 200).toFixed(0);
-    var seconds = (wordCount % 200 / (200/60)).toFixed(0);
-    if((wordCount / 200) >= 1) {
-      setTimeout(function(){
-        $('.reading_time', article).fadeIn(2000).html('Estimated reading time: <strong>' + minutes + ' minute(s) ' + seconds + ' seconds.</strong>');
-      }, 150);
+    var minutes = +(wordCount / 200).toFixed(0);
+    var seconds = +(wordCount % 200 / (200/60)).toFixed(0);
+    if(minutes >= 1) {
+      $('.reading_time', article).fadeIn(1400).html('Estimated reading time: <strong>' + minutes + ' minute(s) ' + seconds + ' seconds.</strong>');
     } else {
-      $('.reading_time').fadeOut(700);
+      $('.reading_time').fadeOut();
     }
     return;
 }
@@ -163,10 +161,7 @@ jQuery(document).ready(function($) {
   // save content on click out of content editable area
   contentEditable.blur(function() {
     // hide Finish Editing button
-    $('.finish_editing').fadeOut(300);
-    setTimeout(function(){
-      $('.finish_editing').remove();
-    }, 300);
+    $('.finish_editing').remove();
     // save content
     var content = articleText.html().trim();
     if (articleSubhead.html() !== "") {
