@@ -74,8 +74,8 @@ function swapContent(content) {
     }
     
     // set header and body content
-    articleSubhead.html(head);
-    articleText.html(body);
+    articleSubhead.html(head).fadeIn(150);
+    articleText.html(body).fadeIn(150);
     // add class to style empty Content area
     if (articleText.text().length <= 3) {
       articleText.addClass('empty');
@@ -89,6 +89,17 @@ function swapContent(content) {
                   success: metadataCallback
               });
           }
+    }
+    // estimate reading time
+    var wordCount = ($('.text_content', article).text().length / 5);
+    var minutes = (wordCount / 200).toFixed(0);
+    var seconds = (wordCount % 200 / (200/60)).toFixed(0);
+    if((wordCount / 200) >= 1) {
+      setTimeout(function(){
+        $('.reading_time', article).fadeIn(2000).html('Estimated reading time: <strong>' + minutes + ' minute(s) ' + seconds + ' seconds.</strong>');
+      }, 150);
+    } else {
+      $('.reading_time').fadeOut(700);
     }
     return;
 }
@@ -139,9 +150,15 @@ jQuery(document).ready(function($) {
   if((aside).length === 0) {
     article.css({'left':'0'});
   }
-    
+
+  contentEditable.hide();
+  contentEditable.focus(function() {
+    $('.reading_time', article).hide();
+    $(article).prepend('<div class="finish_editing" tabindex="2">Finish Editing</div>');
+  });
   // save content on click out of content editable area
   contentEditable.blur(function() {
+    $('.finish_editing').fadeOut(300);
     var content = articleText.html().trim();
     if (articleSubhead.html() !== "") {
       content = articleSubhead.html().trim() + "\n~~~~\n" + content;
@@ -232,6 +249,7 @@ jQuery(document).ready(function($) {
     $('.image_viewer img').fadeIn();
     e.preventDefault();
   });
+
   // resize_image
   $('.image_viewer .size a').live('click', function(e){
     var image = $('.image_viewer img');
@@ -244,6 +262,7 @@ jQuery(document).ready(function($) {
     image.toggleClass(fullSize);
     e.preventDefault();
   });
+
   // close image 
   var _closeImage = function(){
     $('li', images).removeClass('active');

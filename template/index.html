@@ -69,6 +69,7 @@
         </hgroup>
       </header>
       <section class="text_content" {% if not public %} contenteditable='true' {% end %} tabindex="1"></section>
+      <p class="reading_time"></p>
     </div>
 
     {% if len(flist['images']) != 0 or len(flist['files']) != 0 or len(flist['folders']) != 0 or public %}
