@@ -557,9 +557,10 @@ article {
   padding: 10px 20px;
   line-height: 1.6;
   font-size: 1.1em;
+  margin-bottom: 3em;
   position: relative;
   white-space: pre-wrap;
-  min-height: 10em; }
+  min-height: 6em; }
   .text_content.empty {
     min-height: 1em; }
 
