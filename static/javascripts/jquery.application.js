@@ -307,4 +307,7 @@ jQuery(document).ready(function($) {
     files.stop().slideDown(300);
     e.preventDefault();
   });
+  
+  // defaulted textareas
+  $('input.defaulted, textarea.defaulted').defaulted();
 });
