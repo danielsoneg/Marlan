@@ -308,6 +308,6 @@ jQuery(document).ready(function($) {
     e.preventDefault();
   });
   
-  // defaulted textareas
+  // jquery.defaulted init
   $('input.defaulted, textarea.defaulted').defaulted();
 });
