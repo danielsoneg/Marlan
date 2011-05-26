@@ -368,7 +368,7 @@ body > nav {
     -webkit-background-clip: padding-box;
     background-clip: padding-box; }
     body > nav button:hover, body > nav button:focus {
-      background: #0066ff;
+      background: #3399ff;
       cursor: pointer; }
 
 .public {
@@ -495,7 +495,7 @@ article {
   top: 10px;
   padding: 0.5em 1em; }
   .finish_editing:hover, .finish_editing:focus {
-    background: #0066ff;
+    background: #3399ff;
     cursor: pointer; }
 
 .reading_time {
@@ -764,9 +764,7 @@ article > aside {
   margin: 0;
   padding: 0; }
 .images ul {
-  zoom: 1;
-  margin-left: -2%;
-  margin-right: -2%; }
+  zoom: 1; }
   .images ul:before, .images ul:after {
     content: "";
     display: block;
@@ -777,30 +775,151 @@ article > aside {
   float: left;
   width: 29%;
   margin: 5px 2%;
+    margin-right: 2px;
   height: 40px; }
-  .images li a {
+  .images li a.image_link {
     display: block;
     height: 100%;
     width: 100%;
     overflow: hidden;
-    background: rgba(0, 0, 0, 0.5);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='rgba(0, 0, 0, 0.5)', endColorstr='rgba(0, 0, 0, 0.1)');
-    background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.5)), to(rgba(0, 0, 0, 0.1)));
-    background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.1));
-    border: 2px solid transparent; }
-    .images li a:hover, .images li a:focus {
-      border-color: #3399ff; }
-  .images li.active {
-    width: 100%;
-    margin: 20px 0;
-    height: auto;
-    max-height: 100px;
-    overflow: hidden; }
-    .images li.active a {
-      border: none; }
+    background: rgba(0, 0, 0, 0.3); }
+    .images li a.image_link:hover, .images li a.image_link:focus {
+      box-shadow: #3399ff 0 0 2px 1px; }
   .images li img {
     display: block;
     width: 100%; }
+  .images li.active {
+    position: relative;
+    width: 100%;
+    margin: 20px 0;
+    padding: 0;
+    height: auto;
+    overflow: hidden;
+    background: rgba(242, 242, 242, 0);
+    box-shadow: #3399ff 0 0 2px 1px, rgba(0, 0, 0, 0.5) 0 0 5px 1px; }
+    .images li.active a.image_link {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 1;
+      background: none;
+      cursor: default; }
+    .images li.active img {
+      margin-top: -5px; }
+  .images li .details {
+    position: relative;
+    z-index: 2;
+    padding: 1em 10px;
+    margin-top: 50px;
+    background: rgba(242, 242, 242, 0.9); }
+    .images li .details > * {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%; }
+    .images li .details h2 {
+      position: relative;
+      padding: 0;
+        padding-bottom: 0.675em;
+      margin: 0;
+        margin-bottom: 0.675em;
+      font-size: 1.2em;
+      font-weight: bold; }
+      .images li .details h2:before, .images li .details h2:after {
+        position: absolute;
+        left: 0;
+        right: 0;
+        content: "";
+        height: 1px;
+        -moz-opacity: 0.1;
+        opacity: 0.1;
+        zoom: 1; }
+      .images li .details h2:before {
+        bottom: 0;
+        background-image: -webkit-linear-gradient(0deg, transparent, black, transparent); }
+      .images li .details h2:after {
+        bottom: -1px;
+        background-image: -webkit-linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.1), transparent); }
+    .images li .details .size_option {
+      zoom: 1;
+      padding-bottom: 0.75em;
+      margin-bottom: 0.75em;
+      position: relative; }
+      .images li .details .size_option:before, .images li .details .size_option:after {
+        content: "";
+        display: block;
+        overflow: hidden; }
+      .images li .details .size_option:after {
+        clear: both; }
+      .images li .details .size_option:before, .images li .details .size_option:after {
+        position: absolute;
+        left: 0;
+        right: 0;
+        content: "";
+        height: 1px;
+        -moz-opacity: 0.1;
+        opacity: 0.1;
+        zoom: 1; }
+      .images li .details .size_option:before {
+        bottom: 0;
+        background-image: -webkit-linear-gradient(0deg, transparent, black, transparent); }
+      .images li .details .size_option:after {
+        bottom: -1px;
+        background-image: -webkit-linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.1), transparent); }
+    .images li .details label {
+      display: inline-block; }
+    .images li .details label, .images li .details a, .images li .details button {
+      height: 2em;
+      line-height: 2em;
+      margin: 0;
+      padding: 0;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: normal; }
+    .images li .details a, .images li .details button {
+      clear: both;
+      text-align: center;
+      width: 100%;
+      text-transform: capitalize;
+      text-decoration: none;
+      -moz-border-radius: 3px;
+      -webkit-border-radius: 3px;
+      border-radius: 3px;
+      -moz-background-clip: padding-box;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+        border-bottom-color: rgba(0, 0, 0, 0.4);
+      background: white;
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='white', endColorstr='#f0f0f0');
+      background: -webkit-gradient(linear, left top, left bottom, from(white), to(#f0f0f0));
+      background: -moz-linear-gradient(top, white, #f0f0f0);
+      box-shadow: rgba(0, 0, 0, 0.1) 0 -1px 1px, inset rgba(255, 255, 255, 0.1) 0 1px 1px;
+      color: #353535; }
+      .images li .details a:hover, .images li .details a:focus, .images li .details button:hover, .images li .details button:focus {
+        background: #3399ff;
+        color: white;
+        border-color: rgba(0, 0, 0, 0.1);
+        border-top-color: rgba(0, 0, 0, 0.2); }
+    .images li .details #size_button {
+      float: right;
+      width: 50px;
+      border-right: 15px solid #353535;
+      border-left: 1px solid rgba(0, 0, 0, 0.2); }
+      .images li .details #size_button, .images li .details #size_button:hover, .images li .details #size_button:focus {
+        background: white;
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='white', endColorstr='#f0f0f0');
+        background: -webkit-gradient(linear, left top, left bottom, from(white), to(#f0f0f0));
+        background: -moz-linear-gradient(top, white, #f0f0f0);
+        color: #353535;
+        border-bottom-color: rgba(0, 0, 0, 0.4); }
+      .images li .details #size_button.fit_size, .images li .details #size_button.fit_size:hover, .images li .details #size_button.fit_size:focus {
+        background: #3399ff;
+        color: white;
+        border-left: 15px solid #353535;
+        border-right: 1px solid rgba(0, 0, 0, 0.2); }
 
 .image_viewer {
   position: absolute;
@@ -825,49 +944,34 @@ article > aside {
     display: inline-block;
     margin: 0;
       margin-right: 14px;
-    font-size: 18px;
-    height: 24px;
-    line-height: 24px;
-    color: white; }
-  .image_viewer .title {
-    margin-top: 2px;
-    max-width: 300px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; }
-  .image_viewer .action {
+    font-size: 14px;
+    height: 20px;
+    line-height: 20px;
+    background: black;
+    color: white;
     border: 2px solid white;
-    -moz-border-radius: 12px;
-    -webkit-border-radius: 12px;
-    border-radius: 12px;
+    -moz-border-radius: 24px;
+    -webkit-border-radius: 24px;
+    border-radius: 24px;
     -moz-background-clip: padding-box;
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
-    font-size: 12px;
-    -moz-opacity: 0.4;
-    opacity: 0.4;
+    padding: 0 10px;
+    text-decoration: none;
+    cursor: pointer;
+    -moz-opacity: 0.3;
+    opacity: 0.3;
     zoom: 1; }
-    .image_viewer .action, .image_viewer .action a {
-      padding: 0 10px;
-      text-decoration: none;
-      cursor: pointer;
-      background: black; }
-      .image_viewer .action, .image_viewer .action:link, .image_viewer .action:visited, .image_viewer .action a, .image_viewer .action a:link, .image_viewer .action a:visited {
-        color: white; }
-      .image_viewer .action:hover, .image_viewer .action:focus, .image_viewer .action a:hover, .image_viewer .action a:focus {
-        border-color: #3399ff;
-        color: #3399ff;
-        -moz-opacity: 1;
-        opacity: 1;
-        zoom: 1; }
-    .image_viewer .action a {
-      background: none;
-      display: block;
-      margin: -2px -10px;
-      padding-top: 2px;
-      padding-bottom: 2px; }
+    .image_viewer li:hover, .image_viewer li:focus {
+      border-color: #3399ff;
+      color: #3399ff;
+      -moz-opacity: 1;
+      opacity: 1;
+      zoom: 1; }
   .image_viewer img {
-    max-width: 80%;
+    padding: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: none;
     margin: 0 auto; }
-    .image_viewer img.full_size {
-      max-width: none; }
+    .image_viewer img.fit_size {
+      max-width: 80%; }

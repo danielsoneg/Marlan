@@ -135,7 +135,9 @@ jQuery(document).ready(function($) {
   contentEditable = $('*[contenteditable="true"]', article);
   nav = $('body > nav');
   aside = $('aside', article);
+  var folders = $('.folders', aside);
   var images = $('.images', aside);
+  var files = $('.files', aside);
   
   if ($('li.item', nav).length < 2) {
     $('.parent', nav).hide();
@@ -220,8 +222,10 @@ jQuery(document).ready(function($) {
     }, 150);
   });
   $('input', createPage).blur(function(){
-    $('input', createPage).stop().removeClass('active').animate({'width':createPageWidth}, 200);
-    $('button', createPage).fadeOut(50);
+    setTimeout(function(){
+      $('input', createPage).stop().removeClass('active').animate({'width':createPageWidth}, 200);
+      $('button', createPage).fadeOut(50);      
+    }, 2000);
   });
   
   // show files info
@@ -232,23 +236,36 @@ jQuery(document).ready(function($) {
   
   // image click
   $('li:not(.active)', images).live('click', function(e){
+    var imageActive = $('img', this);
+    var imageSrc = imageActive.attr('src');
+    var imageTitle = imageActive.closest('a').attr('title');
+    var imageWidth = imageActive.width();
+    var imageHeight = imageActive.height();
     // close any images open already
     _closeImage();
+    // hide non-image sections in sidebar
+    folders.stop().slideUp(200);
+    files.stop().slideUp(200);
     // set clicked image as active
-    $(this).addClass('active');
+    $(this).addClass('active').animate({'width':'100%'},150);
+    // show image info & controls
+    $(this).prepend(
+      '<div class="details">' + 
+        '<h2>' + imageTitle + '</h2>' +
+        // dimensions is written wrong: should be getting dimensions of original image, not sidebar thumbnail
+        // '<div class="dimensions">' + imageWidth + 'x' + imageHeight + '</div>' +
+        '<div class="size_option"><label class="size_label" for="resizer">Fit to screen:</label> <button id="size_button" class="fit_size">On</button></div>' +
+        '<a target="_blank" href="' + imageSrc + '">open in new window</a>' +
+      '</div>'
+    );
     // create image viewer
     articleContent.hide();
-    var imageSrc = $('img', this).attr('src');
-    var imageTitle = $('img', this).closest('a').attr('title');
     article.prepend(
       '<div class="image_viewer">' +
         '<ul>' +
-          '<li class="title">' + imageTitle + '</li>' +
-          '<li class="close action">close image</li>' +
-          '<li class="direct action"><a href="' + imageSrc + '">direct link to image</a></li>' +
-          '<li class="size action"><a href="#">view original size</a></li>' +
+          '<li class="close">close image viewer</li>' +
         '</ul>' +
-        '<img src="' + imageSrc + '" />' +
+        '<img class="fit_size" src="' + imageSrc + '" />' +
       '</div>'
     );
     $('.image_viewer img').fadeIn();
@@ -256,30 +273,38 @@ jQuery(document).ready(function($) {
   });
 
   // resize_image
-  $('.image_viewer .size a').live('click', function(e){
+  $('#size_button, .size_label', images).live('click', function(e){
+    var sizeButton = $('#size_button');
     var image = $('.image_viewer img');
-    var fullSize = 'full_size';
-    if(image.attr('class') == fullSize) {
-      $('.image_viewer .size a').text('view original size');
+    var fitSize = 'fit_size';
+    sizeButton.toggleClass('fit_size');
+    if(image.attr('class') == fitSize) {
+      sizeButton.text('Off');
     } else {
-      $('.image_viewer .size a').text('fit to screen');
+      sizeButton.text('On');
     }
-    image.toggleClass(fullSize);
+    image.toggleClass(fitSize);
     e.preventDefault();
   });
 
   // close image 
   var _closeImage = function(){
+    $('.active', images).animate({'width':'29%'}, 150);
     $('li', images).removeClass('active');
+    $('.details, .close', images).remove();
     $('.image_viewer').remove();
     articleContent.show();
   };
-  $('.active', images).live('click', function(e){
-    _closeImage();
+  // clicking an active image does: nothing.
+  $('.active img, .active .image_link', images).live('click', function(e){
+    // _closeImage();
     e.preventDefault();
   });
+  // clicking close image 1) closes the image and 2) shows hidden sections in the sidebar
   $('.image_viewer .close').live('click', function(e){
     _closeImage();
+    folders.stop().slideDown(300);
+    files.stop().slideDown(300);
     e.preventDefault();
   });
 });

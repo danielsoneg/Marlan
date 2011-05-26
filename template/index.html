@@ -98,7 +98,7 @@
             <ul>
               {% for image in flist['images'] %}
                 <li>
-                  <a href="http://dl.dropbox.com/u/{{ uid }}{{ image }}" title="{{ image[image.rfind('/')+1:] }}"><img src="http://dl.dropbox.com/u/{{ uid }}{{ image }}"></a>
+                  <a class="image_link" href="http://dl.dropbox.com/u/{{ uid }}{{ image }}" title="{{ image[image.rfind('/')+1:] }}"><img src="http://dl.dropbox.com/u/{{ uid }}{{ image }}"></a>
                 </li>
               {% end %}
             </ul>
