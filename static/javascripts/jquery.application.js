@@ -139,9 +139,6 @@ jQuery(document).ready(function($) {
   var images = $('.images', aside);
   var files = $('.files', aside);
   
-  if ($('li.item', nav).length < 2) {
-    $('.parent', nav).hide();
-  }
   // breadcrumb go up one level
   var parent = $('.current', nav).prev();
   var parentUrl = $('a', parent).attr('href');
