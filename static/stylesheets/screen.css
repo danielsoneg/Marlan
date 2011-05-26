@@ -294,11 +294,27 @@ body > nav {
       color: rgba(0, 0, 0, 0.4); }
     body > nav li:first-child:before, body > nav li:nth-child(2):before {
       display: none; }
-  body > nav a, body > nav a:link, body > nav a:visited {
-    color: #666666; }
-  body > nav a:hover, body > nav a:focus {
-    color: #0066cc;
-    text-decoration: none; }
+  body > nav a {
+    display: inline-block; }
+    body > nav a, body > nav a:link, body > nav a:visited {
+      color: #666666; }
+    body > nav a:hover, body > nav a:focus {
+      color: #0066cc;
+      text-decoration: none; }
+  body > nav .highlight, body > nav .highlight:link, body > nav .highlight:visited {
+    background: rgba(0, 0, 0, 0.8);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='rgba(0, 0, 0, 0.8)', endColorstr='rgba(0, 0, 0, 0.6)');
+    background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.8)), to(rgba(0, 0, 0, 0.6)));
+    background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-background-clip: padding-box;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    color: white;
+    padding-left: 5px;
+    padding-right: 5px; }
   body > nav input {
     margin: 0;
     padding: 0;

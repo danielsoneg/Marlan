@@ -146,6 +146,9 @@ jQuery(document).ready(function($) {
   var parent = $('.current', nav).prev();
   var parentUrl = $('a', parent).attr('href');
   $('.parent a', nav).attr('href',parentUrl);
+  $('.parent a').click(function(){
+    $('a', parent).addClass('highlight');
+  });
   
   // expand content width if no asides
   if((aside).length === 0) {

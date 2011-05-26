@@ -145,11 +145,21 @@ body > nav
       &:before
         display: none
   a
+    display: inline-block
     &, &:link, &:visited
       color: #666
     &:hover, &:focus
       color: $color_link
       text-decoration: none
+  .highlight
+    &, &:link, &:visited
+      @include gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.6))
+      @include border_radius(3px)
+      color: #fff
+      padding:
+        left: 5px
+        right: 5px
+
   input
     @include reset_box
     margin: 5px 0
