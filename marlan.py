@@ -17,6 +17,7 @@ import subprocess
 import urllib
 import time
 import re
+import markdown
 # Dropbox
 from dropbox import auth, client
 # Ours
@@ -90,8 +91,10 @@ class InfoHandler(BaseHandler):
             logging.info('hey, anon')
             uid = tpath[1:tpath.find('/')]
             tpath = tpath[tpath.find('/')+1:]
+            self.public = True
         else:
             uid = self.current_user
+            self.public = False
         logging.info(tpath)
         url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/info.txt" % {'uid':uid,'path':tpath}
         logging.info(url)
@@ -104,6 +107,9 @@ class InfoHandler(BaseHandler):
             self.write(' ')
         else:
             content = bundles.linkify(response.body)
+            #content = response.body
+            if self.public:
+                content = markdown.markdown(content)
             self.write(content)
         logging.info("Finishing...")
         self.finish()
