@@ -89,13 +89,15 @@
         {% if len(flist['images']) != 0 %}
           <section class="images">
             <h1>Images</h1>
-            <div class="controls">
-              <button rel="previous" title="View previous image">Previous</button>
-              <button rel="theme" title="Toggle light/dark image viewing theme">Toggle Theme</button>
-              <button rel="next" title="View next image">Next</button>
-              <button rel="grid_side" title="Toggle small/large image grid">Grid Size</button>
-            </div>
-            <ul>
+            <ul class="controls">
+              <li class="close"><button rel="close" title="Close image viewer">X</button></li>
+              <li class="previous"><button rel="previous" title="View previous image">Previous</button></li>
+              <li class="view_mode">
+                <button rel="view_mode" title="Set image viewer display mode">Display</button>
+              </li>
+              <li class="next"><button rel="next" title="View next image">Next</button></li>
+            </ul>
+            <ul class="image_list">
               {% for image in flist['images'] %}
                 <li>
                   <a class="image_link" href="http://dl.dropbox.com/u/{{ uid }}{{ image }}" title="{{ image[image.rfind('/')+1:] }}"><img src="http://dl.dropbox.com/u/{{ uid }}{{ image }}"></a>

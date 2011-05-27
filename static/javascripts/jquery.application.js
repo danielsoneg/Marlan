@@ -241,7 +241,7 @@ jQuery(document).ready(function($) {
   });
   
   // image click
-  $('li:not(.active)', images).live('click', function(e){
+  $('.image_list li:not(.active)').live('click', function(e){
     var imageActive = $('img', this);
     var imageSrc = imageActive.attr('src');
     var imageTitle = imageActive.closest('a').attr('title');
@@ -252,15 +252,20 @@ jQuery(document).ready(function($) {
     // hide non-image sections in sidebar
     folders.stop().slideUp(200);
     files.stop().slideUp(200);
+    // show images controls
+    setTimeout(function(){
+      $('.controls', images).slideDown(200);
+    }, 200);
+    $('h1', images).hide();
     // set clicked image as active
     $(this).addClass('active').animate({'width':'100%'},150);
-    // show image info & controls
+    // create+show image-specific info & controls
     $(this).prepend(
       '<div class="details">' + 
         '<h2>' + imageTitle + '</h2>' +
         // dimensions is written wrong: should be getting dimensions of original image, not sidebar thumbnail
         // '<div class="dimensions">' + imageWidth + 'x' + imageHeight + '</div>' +
-        '<div class="size_option"><label class="size_label" for="resizer">Fit to screen:</label> <button id="size_button" class="fit_size">On</button></div>' +
+        '<div class="size_option"><label class="size_label" for="resizer">Fit screen width:</label> <button id="size_button" class="fit_size">On</button></div>' +
         '<a target="_blank" href="' + imageSrc + '">open in new window</a>' +
       '</div>'
     );
@@ -268,13 +273,23 @@ jQuery(document).ready(function($) {
     articleContent.hide();
     article.prepend(
       '<div class="image_viewer">' +
-        '<ul>' +
-          '<li class="close">close image viewer</li>' +
-        '</ul>' +
         '<img class="fit_size" src="' + imageSrc + '" />' +
       '</div>'
     );
     $('.image_viewer img').fadeIn();
+    // enable/disable Next and Prev buttons
+    var prevImage = $('.active', images).prev();
+    var nextImage = $('.active', images).next();
+    if(prevImage.length === 0) {
+      $('.previous', images).addClass('disabled');
+    } else {
+      $('.previous', images).removeClass('disabled');
+    }
+    if(nextImage.length === 0) {
+      $('.next', images).addClass('disabled');
+    } else {
+      $('.next', images).removeClass('disabled');
+    }
     e.preventDefault();
   });
 
@@ -293,26 +308,67 @@ jQuery(document).ready(function($) {
     e.preventDefault();
   });
 
+  var _showSidebarLists = function(){
+    folders.stop().slideDown(300);
+    files.stop().slideDown(300);
+    $('.controls', images).hide();
+    $('h1', images).show();
+  };
   // close image 
   var _closeImage = function(){
     $('.active', images).animate({'width':'29%'}, 150);
     $('li', images).removeClass('active');
-    $('.details, .close', images).remove();
+    $('.details', images).remove();
     $('.image_viewer').remove();
     articleContent.show();
   };
+  // Prev Image
+  var _prevImage = function(){
+    var prevImage = $('.active', images).prev();
+    $('a', prevImage).click();
+  };
+  $('.previous:not(.disabled) button', images).click(function(){
+    _prevImage();
+  });
+  $(document).keydown(function(e) {
+    // Left Arrow keypress
+    if (e.keyCode == 37) {
+      _prevImage();
+    }
+  });
+  // Next Image
+  var _nextImage = function(){
+    var nextImage = $('.active', images).next();
+    $('a', nextImage).click();
+  };
+  $('.next:not(.disabled) button', images).click(function(){
+      _nextImage();
+  });
+  $(document).keydown(function(e) {
+    // Right Arrow keypress
+    if (e.keyCode == 39) {
+      _nextImage();
+    }
+  });
   // clicking an active image does: nothing.
   $('.active img, .active .image_link', images).live('click', function(e){
     // _closeImage();
     e.preventDefault();
   });
-  // clicking close image 1) closes the image and 2) shows hidden sections in the sidebar
-  $('.image_viewer .close').live('click', function(e){
+  // Close image viewer 1) closes the image and 2) shows hidden sections in the sidebar
+  $('.close', images).click(function(e){
     _closeImage();
-    folders.stop().slideDown(300);
-    files.stop().slideDown(300);
+    _showSidebarLists();
     e.preventDefault();
   });
+  $(document).keydown(function(e) {
+    // Escape keypress
+    if (e.keyCode == 27) {
+      _closeImage();
+      _showSidebarLists();
+    }
+  });
+
   
   // jquery.defaulted init
   $('input.defaulted, textarea.defaulted').defaulted();

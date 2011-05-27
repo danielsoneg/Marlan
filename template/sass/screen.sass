@@ -334,7 +334,9 @@ $editable_padding: 10px 20px
     font:
       size: 3em
       weight: normal
-      color: #181818
+    color: #181818
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1)
+
   h2
     line-height: 1.4
     font-size: 1.45em
@@ -487,49 +489,108 @@ article > aside
   a:before
     background-image: url("../images/file.png")
 .images
-  .controls
-    display: none
   ul, li
     margin: 0
     padding: 0
   ul
     @include clearfix
-  li
-    float: left
-    width: 29%
-    margin: 5px 2%
-      right: 2px
-    height: 40px
-    a.image_link
-      display: block
-      height: 100%
-      width: 100%
-      overflow: hidden
-      background: rgba(0,0,0,0.3)
-      &:hover, &:focus
-        box-shadow: $color_link_bright 0 0 2px 1px
-    img
-      display: block
-      width: 100%
-    &.active
-      position: relative
-      width: 100%
-      margin: 20px 0
+  .controls
+    display: none
+    margin: -20px
+      top: -18px
+      bottom: 20px
+    @include gradient(#bfbfbf, #9f9f9f)
+    border:
+      bottom: 1px solid #777
+    li
+      float: left
+      width: 26%
+      height: 30px
+      margin: 0
       padding: 0
-      height: auto
       overflow: hidden
-      background: rgba(242,242,242,0)
-      box-shadow: $color_link_bright 0 0 2px 1px, rgba(0,0,0,.5) 0 0 5px 1px
-      a.image_link
-        position: absolute
-        top: 0
-        right: 0
-        left: 0
-        z-index: 1
-        background: none
+      text-align: center
+      border-right: 1px solid rgba(0,0,0,0.1)
+    button
+      @include reset_box
+      border: 0
+      background: none
+      font:
+        weight: bold
+      width: 100%
+      text-shadow: rgba(255,255,255,0.3) 0 1px 1px
+      height: 100%
+      cursor: pointer
+    li:not(.disabled) button
+      &:hover, &:focus
+        background: $color_link_bright
+        color: #fff
+    .previous
+      border-left: 1px solid rgba(0,0,0,0.1)
+    .next
+      border: 0
+    .close
+      width: 21%
+      border-color: transparent
+      button
+        background: #666
+        color: #bfbfbf
+        @include border_radius(12px)
+        box-shadow: rgba(255,255,255,0.5) 0 1px 1px, inset rgba(0,0,0,0.3) 0 1px 1px
+        height: 16px
+        width: 16px
+        margin: 7px auto
+        font-size: 9px
+        text:
+          shadow: rgba(0,0,0,0.2) 0 1px 1px
+        &:hover, &:focus
+          box-shadow: rgba(255,255,255,0.5) 0 0 2px
+          background: $color_link_bright
+          color: #fff
+    .disabled
+      button
+        color: #999
         cursor: default
+  .image_list
+    li
+      float: left
+      width: 29%
+      margin: 5px 2%
+        right: 2px
+      height: 40px
+      a.image_link
+        display: block
+        height: 100%
+        width: 100%
+        overflow: hidden
+        background: rgba(0,0,0,0.3)
+        &:hover, &:focus
+          box-shadow: $color_link_bright 0 0 2px 1px
       img
-        margin-top: -5px
+        display: block
+        width: 100%
+        -ms-interpolation-mode: nearest-neighbor
+        image-rendering: -moz-crisp-edges
+        image-rendering: -webkit-optimize-contrast
+      &.active
+        position: relative
+        width: 100%
+        margin: 20px 0
+        padding: 0
+        height: auto
+        overflow: hidden
+        background: rgba(242,242,242,0)
+        box-shadow: $color_link_bright 0 0 2px 1px, rgba(0,0,0,.5) 0 0 5px 1px
+        a.image_link
+          position: absolute
+          top: 0
+          right: 0
+          left: 0
+          z-index: 1
+          background: none
+          cursor: default
+        img
+          margin-top: -15%
     .details
       box-shadow: rgba(0,0,0,0.4) 0 0 3px 1px
       border:
@@ -538,8 +599,8 @@ article > aside
       position: relative
       z-index: 2
       padding: 1em 10px
-      margin-top: 50px
-      background: rgba(242,242,242,0.9)
+      margin-top: 30px
+      background: #f5f5f5
       > *
         display: block
         white-space: nowrap
@@ -653,8 +714,8 @@ article > aside
     padding: 0
   ul
     position: fixed
-    left: 13px + 240px
-    top: 13px + $nav_height
+    left: 10px + 240px
+    top: 10px + $nav_height
   li
     display: inline-block
     margin: 0
@@ -679,8 +740,10 @@ article > aside
     border: 1px solid rgba(255,255,255,0.1)
     max-width: none
     margin: 0 auto
+    -ms-interpolation-mode: bicubic
+    image-rendering: optimizeQuality
     &.fit_size
-      max-width: 80%
+      max-width: 100%
 
 //@media screen and (min-width:480px)
 //
