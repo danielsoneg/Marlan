@@ -159,6 +159,12 @@ jQuery(document).ready(function($) {
   contentEditable.focus(function() {
     $('.reading_time', article).hide();
     $(article).prepend('<div class="finish_editing" tabindex="2">Finish Editing</div>');
+    $(document).keydown(function(e) {
+      // Escape keypress
+      if (e.keyCode == 27) {
+        contentEditable.blur();
+      }
+    });
   });
 
   // save content on click out of content editable area
