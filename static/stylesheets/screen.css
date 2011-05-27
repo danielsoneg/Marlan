@@ -821,6 +821,12 @@ article > aside {
   .images .controls li:not(.disabled) button:hover, .images .controls li:not(.disabled) button:focus {
     background: #3399ff;
     color: white; }
+  .images .controls li:not(.disabled) button:active, .images .controls li:not(.disabled) button.highlight {
+    background: rgba(0, 0, 0, 0.2);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='rgba(0, 0, 0, 0.2)', endColorstr='rgba(0, 0, 0, 0.1)');
+    background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.2)), to(rgba(0, 0, 0, 0.1)));
+    background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
+    color: black; }
   .images .controls .previous {
     border-left: 1px solid rgba(0, 0, 0, 0.1); }
   .images .controls .next {
@@ -897,7 +903,10 @@ article > aside {
   z-index: 2;
   padding: 1em 10px;
   margin-top: 30px;
-  background: #f5f5f5; }
+  background: #f5f5f5;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f5f5f5', endColorstr='#dadada');
+  background: -webkit-gradient(linear, left top, left bottom, from(#f5f5f5), to(#dadada));
+  background: -moz-linear-gradient(top, #f5f5f5, #dadada); }
   .images .image_list .details > * {
     display: block;
     white-space: nowrap;

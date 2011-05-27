@@ -525,6 +525,9 @@ article > aside
       &:hover, &:focus
         background: $color_link_bright
         color: #fff
+      &:active, &.highlight
+        @include gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.1))
+        color: #000
     .previous
       border-left: 1px solid rgba(0,0,0,0.1)
     .next
@@ -600,7 +603,7 @@ article > aside
       z-index: 2
       padding: 1em 10px
       margin-top: 30px
-      background: #f5f5f5
+      @include gradient(#f5f5f5, #dadada)
       > *
         display: block
         white-space: nowrap

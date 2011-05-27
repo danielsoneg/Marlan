@@ -325,7 +325,12 @@ jQuery(document).ready(function($) {
   // Prev Image
   var _prevImage = function(){
     var prevImage = $('.active', images).prev();
+    var prevButton = $('.previous button', images);
     $('a', prevImage).click();
+    prevButton.addClass('highlight');
+    setTimeout(function(){
+      prevButton.removeClass('highlight');
+    }, 200);
   };
   $('.previous:not(.disabled) button', images).click(function(){
     _prevImage();
@@ -339,7 +344,12 @@ jQuery(document).ready(function($) {
   // Next Image
   var _nextImage = function(){
     var nextImage = $('.active', images).next();
+    var nextButton = $('.next button', images);
     $('a', nextImage).click();
+    nextButton.addClass('highlight');
+    setTimeout(function(){
+      nextButton.removeClass('highlight');
+    }, 200);
   };
   $('.next:not(.disabled) button', images).click(function(){
       _nextImage();
