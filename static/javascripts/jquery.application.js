@@ -1,4 +1,16 @@
-function createFolders(data,uid) {
+article = $('article');
+articleContent = $('.content', article);
+articleHeader = $('.article_header', article);
+articleSubhead = $('h2', articleHeader);
+articleText = $('.text_content', article);
+contentEditable = $('*[contenteditable="true"]', article);
+nav = $('body > nav');
+aside = $('aside', article);
+folders = $('.folders', aside);
+images = $('.images', aside);
+files = $('.files', aside);
+
+var _createFolders = function(data,uid) {
     if (data.folders.length > 0) {
         var asideContents = "<ol class='folders'>";
         $.each(data.folders, function(index, value){ 
@@ -9,9 +21,9 @@ function createFolders(data,uid) {
         asideContents = asideContents + "\n</ul>";
         aside.html(asideContents);
     }
-}
+};
 
-function createMedia(data,uid) {
+var _createMedia = function(data,uid) {
     var asideContents = aside.html();
     if (data.files.length > 0) {
         asideContents = asideContents + '\n<ul class="files">';
@@ -35,18 +47,9 @@ function createMedia(data,uid) {
         asideContents = asideContents + "\n</ul>";
     }
     aside.html(asideContents);
-}
+};
 
-function passCallback(data) {
-    $.ajax({
-        type: 'POST',
-        url: window.location.pathname,
-        data: 'action=metadata',
-        success: metadataCallback
-    });
-}
-
-function metadataCallback(data) {
+var _metadataCallback = function(data) {
     if (data === 0) {
         //Incorrect Password Stuff Goes Here
         alert('Wrong Pass!');
@@ -55,16 +58,16 @@ function metadataCallback(data) {
         url = window.location.pathname;
         var uid = url.substr(2,url.indexOf('/',1)-2);
         data = jQuery.parseJSON(data);
-        createFolders(data,uid);
-        createMedia(data,uid);
+        _createFolders(data,uid);
+        _createMedia(data,uid);
         if ($('body').hasClass('public')) {
             var url = window.location.pathname +'/info.txt';
-            getInfo(url);
+            _getInfo(url);
         }
     }        
-}
+};
 
-function swapContent(content) {
+var _swapContent = function(content) {
     var head = "";
     var body = content;
     if (content.indexOf("~~~~") >= 0) {
@@ -86,7 +89,7 @@ function swapContent(content) {
                   type: 'POST',
                   url: window.location.pathname,
                   data: 'action=metadata',
-                  success: metadataCallback
+                  success: _metadataCallback
               });
           }
     }
@@ -100,44 +103,133 @@ function swapContent(content) {
       $('.reading_time').fadeOut();
     }
     return;
-}
+};
 
-function getInfo(url) {
+var _getInfo = function(url) {
     $.ajax({
        type: "GET",
        url: url,
-       success: swapContent
+       success: _swapContent
     });
     return;
-}
+};
 
 function pageLandingInteractions(){
     var url = window.location.pathname +'/info.txt';
     if (!$('body').hasClass('public')) {
-        getInfo(url);
+        _getInfo(url);
     }
 }
 
-function editCallback(data) {
+var _passCallback = function(data) {
+    $.ajax({
+        type: 'POST',
+        url: window.location.pathname,
+        data: 'action=metadata',
+        success: _metadataCallback
+    });
+};
+
+var _editCallback = function(data) {
     var data = jQuery.parseJSON(data);
     if (data.Code == 1) {
-        swapContent(data.Message);
+        _swapContent(data.Message);
     }
-}
+};
+
+// Next Image
+var _nextImage = function(){
+  var nextImage = $('.active', images).next();
+  var nextButton = $('.next button', images);
+  $('a', nextImage).click();
+  nextButton.addClass('highlight');
+  setTimeout(function(){
+    nextButton.removeClass('highlight');
+  }, 200);
+};
+$('.next:not(.disabled) button', images).click(function(){
+    _nextImage();
+});
+$(document).keydown(function(e) {
+  // Right Arrow keypress
+  if (e.keyCode == 39) {
+    _nextImage();
+  }
+});
+
+
+// Prev Image
+var _prevImage = function(){
+  var prevImage = $('.active', images).prev();
+  var prevButton = $('.previous button', images);
+  $('a', prevImage).click();
+  prevButton.addClass('highlight');
+  setTimeout(function(){
+    prevButton.removeClass('highlight');
+  }, 200);
+};
+$('.previous:not(.disabled) button', images).click(function(){
+  _prevImage();
+});
+$(document).keydown(function(e) {
+  // Left Arrow keypress
+  if (e.keyCode == 37) {
+    _prevImage();
+  }
+});
+
+// close image 
+var _closeImage = function(){
+  $('.active', images).animate({'width':'29%'}, 150);
+  $('li', images).removeClass('active');
+  $('.details', images).remove();
+  $('.image_viewer').remove();
+  articleContent.show();
+};
+
+// resize_image
+$('#size_button, .size_label', images).live('click', function(e){
+  var sizeButton = $('#size_button');
+  var image = $('.image_viewer img');
+  var fitSize = 'fit_size';
+  sizeButton.toggleClass('fit_size');
+  if(image.attr('class') == fitSize) {
+    sizeButton.text('Off');
+  } else {
+    sizeButton.text('On');
+  }
+  image.toggleClass(fitSize);
+  e.preventDefault();
+});
+
+var _showSidebarLists = function(){
+  folders.stop().slideDown(300);
+  files.stop().slideDown(300);
+  $('.controls', images).hide();
+  $('h1', images).show();
+};
+
+// clicking an active image does: nothing.
+$('.active img, .active .image_link', images).live('click', function(e){
+  // _closeImage();
+  e.preventDefault();
+});
+// Close image viewer 1) closes the image and 2) shows hidden sections in the sidebar
+$('.close', images).click(function(e){
+  _closeImage();
+  _showSidebarLists();
+  e.preventDefault();
+});
+$(document).keydown(function(e) {
+  // Escape keypress
+  if (e.keyCode == 27) {
+    _closeImage();
+    _showSidebarLists();
+  }
+});
 
 jQuery(document).ready(function($) {
   var pageLanding = new pageLandingInteractions();
-  article = $('article');
-  articleContent = $('.content', article);
-  articleHeader = $('.article_header', article);
-  articleSubhead = $('h2', articleHeader);
-  articleText = $('.text_content', article);
-  contentEditable = $('*[contenteditable="true"]', article);
-  nav = $('body > nav');
-  aside = $('aside', article);
-  var folders = $('.folders', aside);
-  var images = $('.images', aside);
-  var files = $('.files', aside);
   
   // breadcrumb go up one level
   var parent = $('.current', nav).prev();
@@ -180,7 +272,7 @@ jQuery(document).ready(function($) {
      type: "POST",
      url: window.location.pathname,
      data: "text=" + escape(content) + "&action=write",
-     success: editCallback
+     success: _editCallback
     });
   });
   
@@ -201,7 +293,7 @@ jQuery(document).ready(function($) {
       type: "POST",
       url: window.location.pathname,
       data: "pw=" + escape(pass) + "&action=public",
-      success: passCallback
+      success: _passCallback
     });
   });
   $('#pubgo').click(function(){
@@ -210,7 +302,7 @@ jQuery(document).ready(function($) {
           type: 'POST',
           url: window.location.pathname,
           data: "pw=" + escape(pass) + '&action=metadata',
-          success: metadataCallback
+          success: _metadataCallback
       });
   });
   
@@ -249,6 +341,8 @@ jQuery(document).ready(function($) {
     var imageHeight = imageActive.height();
     // close any images open already
     _closeImage();
+    // set clicked image as active
+    $(this).addClass('active').animate({'width':'100%'},150);
     // hide non-image sections in sidebar
     folders.stop().slideUp(200);
     files.stop().slideUp(200);
@@ -257,8 +351,6 @@ jQuery(document).ready(function($) {
       $('.controls', images).slideDown(200);
     }, 200);
     $('h1', images).hide();
-    // set clicked image as active
-    $(this).addClass('active').animate({'width':'100%'},150);
     // create+show image-specific info & controls
     $(this).prepend(
       '<div class="details">' + 
@@ -293,93 +385,6 @@ jQuery(document).ready(function($) {
     e.preventDefault();
   });
 
-  // resize_image
-  $('#size_button, .size_label', images).live('click', function(e){
-    var sizeButton = $('#size_button');
-    var image = $('.image_viewer img');
-    var fitSize = 'fit_size';
-    sizeButton.toggleClass('fit_size');
-    if(image.attr('class') == fitSize) {
-      sizeButton.text('Off');
-    } else {
-      sizeButton.text('On');
-    }
-    image.toggleClass(fitSize);
-    e.preventDefault();
-  });
-
-  var _showSidebarLists = function(){
-    folders.stop().slideDown(300);
-    files.stop().slideDown(300);
-    $('.controls', images).hide();
-    $('h1', images).show();
-  };
-  // close image 
-  var _closeImage = function(){
-    $('.active', images).animate({'width':'29%'}, 150);
-    $('li', images).removeClass('active');
-    $('.details', images).remove();
-    $('.image_viewer').remove();
-    articleContent.show();
-  };
-  // Prev Image
-  var _prevImage = function(){
-    var prevImage = $('.active', images).prev();
-    var prevButton = $('.previous button', images);
-    $('a', prevImage).click();
-    prevButton.addClass('highlight');
-    setTimeout(function(){
-      prevButton.removeClass('highlight');
-    }, 200);
-  };
-  $('.previous:not(.disabled) button', images).click(function(){
-    _prevImage();
-  });
-  $(document).keydown(function(e) {
-    // Left Arrow keypress
-    if (e.keyCode == 37) {
-      _prevImage();
-    }
-  });
-  // Next Image
-  var _nextImage = function(){
-    var nextImage = $('.active', images).next();
-    var nextButton = $('.next button', images);
-    $('a', nextImage).click();
-    nextButton.addClass('highlight');
-    setTimeout(function(){
-      nextButton.removeClass('highlight');
-    }, 200);
-  };
-  $('.next:not(.disabled) button', images).click(function(){
-      _nextImage();
-  });
-  $(document).keydown(function(e) {
-    // Right Arrow keypress
-    if (e.keyCode == 39) {
-      _nextImage();
-    }
-  });
-  // clicking an active image does: nothing.
-  $('.active img, .active .image_link', images).live('click', function(e){
-    // _closeImage();
-    e.preventDefault();
-  });
-  // Close image viewer 1) closes the image and 2) shows hidden sections in the sidebar
-  $('.close', images).click(function(e){
-    _closeImage();
-    _showSidebarLists();
-    e.preventDefault();
-  });
-  $(document).keydown(function(e) {
-    // Escape keypress
-    if (e.keyCode == 27) {
-      _closeImage();
-      _showSidebarLists();
-    }
-  });
-
-  
   // jquery.defaulted init
   $('input.defaulted, textarea.defaulted').defaulted();
 });
