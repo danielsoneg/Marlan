@@ -137,6 +137,34 @@ var _editCallback = function(data) {
     }
 };
 
+// create image viewer
+var _createImageInterface = function() {
+  // hide non-image sections in sidebar
+  folders.stop().slideUp(200);
+  files.stop().slideUp(200);
+  // show images controls
+  setTimeout(function(){
+    $('.controls', images).slideDown(200);
+  }, 200);
+  // hide images section title
+  $('h1', images).hide();
+  // hide article content
+  articleContent.hide();
+  // create image viewer
+  article.prepend(
+    '<div class="image_viewer" />'
+  );
+};
+
+// show image
+var _showImage = function(){
+  var imageViewer = $('.image_viewer');
+  imageViewer.append(
+    '<img class="fit_size" src="' + imageSrc + '" />'
+  );
+  $('img', imageViewer).fadeIn();
+};
+
 // Next Image
 var _nextImage = function(){
   var nextImage = $('.active', images).next();
@@ -151,12 +179,11 @@ $('.next:not(.disabled) button', images).click(function(){
     _nextImage();
 });
 $(document).keydown(function(e) {
-  // Right Arrow keypress
+  // 'Right Arrow' keypress
   if (e.keyCode == 39) {
     _nextImage();
   }
 });
-
 
 // Prev Image
 var _prevImage = function(){
@@ -172,7 +199,7 @@ $('.previous:not(.disabled) button', images).click(function(){
   _prevImage();
 });
 $(document).keydown(function(e) {
-  // Left Arrow keypress
+  // 'Left Arrow' keypress
   if (e.keyCode == 37) {
     _prevImage();
   }
@@ -183,8 +210,22 @@ var _closeImage = function(){
   $('.active', images).animate({'width':'29%'}, 150);
   $('li', images).removeClass('active');
   $('.details', images).remove();
-  $('.image_viewer').remove();
+  $('.image_viewer img').remove();
+};
+
+var _closeImageInterface = function(){
+  imageInterfaceOpen = false;
+  // close image
+  _closeImage();
+  // show article content
   articleContent.show();
+  // destory image viewer interface
+  $('.image_viewer').remove();
+  $('.controls', images).hide();
+  // restore sidebar lists
+  folders.stop().slideDown(300);
+  files.stop().slideDown(300);
+  $('h1', images).show();
 };
 
 // resize_image
@@ -202,13 +243,6 @@ $('#size_button, .size_label', images).live('click', function(e){
   e.preventDefault();
 });
 
-var _showSidebarLists = function(){
-  folders.stop().slideDown(300);
-  files.stop().slideDown(300);
-  $('.controls', images).hide();
-  $('h1', images).show();
-};
-
 // clicking an active image does: nothing.
 $('.active img, .active .image_link', images).live('click', function(e){
   // _closeImage();
@@ -216,15 +250,13 @@ $('.active img, .active .image_link', images).live('click', function(e){
 });
 // Close image viewer 1) closes the image and 2) shows hidden sections in the sidebar
 $('.close', images).click(function(e){
-  _closeImage();
-  _showSidebarLists();
+  _closeImageInterface();
   e.preventDefault();
 });
 $(document).keydown(function(e) {
-  // Escape keypress
+  // 'Escape' keypress
   if (e.keyCode == 27) {
-    _closeImage();
-    _showSidebarLists();
+    _closeImageInterface();
   }
 });
 
@@ -326,49 +358,38 @@ jQuery(document).ready(function($) {
     }, 2000);
   });
   
-  // show files info
+  // show sidebar files list instructional text
   var info = $('.info', aside);
   info.click(function(){
     info.toggleClass('active');
   });
   
   // image click
+  imageInterfaceOpen = false;
   $('.image_list li:not(.active)').live('click', function(e){
-    var imageActive = $('img', this);
-    var imageSrc = imageActive.attr('src');
-    var imageTitle = imageActive.closest('a').attr('title');
-    var imageWidth = imageActive.width();
-    var imageHeight = imageActive.height();
-    // close any images open already
-    _closeImage();
+    // is an image already open?
+    if (imageInterfaceOpen === true) {
+      // destory existing image
+      _closeImage();
+    } else {
+      _createImageInterface();
+      imageInterfaceOpen = true;
+    }
     // set clicked image as active
+    var imageActive = $('img', this);
+    imageSrc = imageActive.attr('src');
+    var imageTitle = imageActive.closest('a').attr('title');
     $(this).addClass('active').animate({'width':'100%'},150);
-    // hide non-image sections in sidebar
-    folders.stop().slideUp(200);
-    files.stop().slideUp(200);
-    // show images controls
-    setTimeout(function(){
-      $('.controls', images).slideDown(200);
-    }, 200);
-    $('h1', images).hide();
-    // create+show image-specific info & controls
+    // show active image
+    _showImage();
+    // create & show image-specific info & controls
     $(this).prepend(
       '<div class="details">' + 
         '<h2>' + imageTitle + '</h2>' +
-        // dimensions is written wrong: should be getting dimensions of original image, not sidebar thumbnail
-        // '<div class="dimensions">' + imageWidth + 'x' + imageHeight + '</div>' +
         '<div class="size_option"><label class="size_label" for="resizer">Fit screen width:</label> <button id="size_button" class="fit_size">On</button></div>' +
         '<a target="_blank" href="' + imageSrc + '">open in new window</a>' +
       '</div>'
     );
-    // create image viewer
-    articleContent.hide();
-    article.prepend(
-      '<div class="image_viewer">' +
-        '<img class="fit_size" src="' + imageSrc + '" />' +
-      '</div>'
-    );
-    $('.image_viewer img').fadeIn();
     // enable/disable Next and Prev buttons
     var prevImage = $('.active', images).prev();
     var nextImage = $('.active', images).next();
