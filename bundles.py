@@ -30,7 +30,7 @@ class Bundles(object):
             ret = self.listDir(resp)
         elif 'error' in resp.data and resp.status == 404:
             t = 'index'
-            ret = {'folders':[],'files':[],'images':[],'hasinfo':False}
+            ret = {'folders':[],'files':[],'images':[],'hasinfo':False,'has_pass':False}
         if path == "/Public/":
             ret['files'] = []
             ret['images'] = []
@@ -48,7 +48,7 @@ class Bundles(object):
         info = dropBoxFile(path, self.client, 'info.txt')
         status = info.write(content)
         if pw:
-            logging.info("Hey, a password!")
+            logging.info("Hey, a password! %s" % pw)
             (t, pathInfo) = self.getPath(path)
             meta = dropBoxFile(path,self.client,'.metadata')
             pathInfo = self.cypher.cryptInfo(pw,pathInfo)
