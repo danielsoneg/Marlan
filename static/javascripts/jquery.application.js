@@ -21,20 +21,33 @@ _swapContent = function(content) {
     }
     
     // set header and body content
-    articleSubhead.html(head).fadeIn(150);
-    articleText.html(body).fadeIn(150);
-    // add class to style empty Content area
-    if (articleText.text().length <= 3) {
+    var articleFadeIn = 400;
+    articleSubhead.html(head).fadeIn(articleFadeIn);
+    articleText.html(body).fadeIn(articleFadeIn);
+    
+    // empty Subhead
+    if (articleSubhead.text().length < 1) {
+      articleSubhead.addClass('empty');
+      articleSubhead.blur(function(){
+        if ($(this).text().length > 0) {
+          $(this).removeClass('empty');
+        }
+      });
+    } else { 
+      articleSubhead.removeClass('empty');
+    }
+    // empty Content
+    if (articleText.text().length < 1) {
       articleText.addClass('empty');
-      } else { 
-          articleText.removeClass('empty');
+    } else { 
+      articleText.removeClass('empty');
     }
     // estimate reading time
     var wordCount = ($('.text_content', article).text().length / 5);
     var minutes = +(wordCount / 200).toFixed(0);
     var seconds = +(wordCount % 200 / (200/60)).toFixed(0);
     if(minutes >= 1) {
-      $('.reading_time', article).fadeIn(1400).html('Estimated reading time: <strong>' + minutes + ' minute(s) ' + seconds + ' seconds.</strong>');
+      $('.reading_time', article).html('Estimated reading time: <strong>' + minutes + ' minute(s) ' + seconds + ' seconds.</strong>').fadeIn(articleFadeIn);
     } else {
       $('.reading_time').fadeOut();
     }

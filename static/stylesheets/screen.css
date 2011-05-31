@@ -553,7 +553,6 @@ article {
     background-image: -webkit-linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.2), transparent); }
   .article_header h1, .article_header h2 {
     clear: both;
-    padding-bottom: 0.2em;
     padding: 10px 20px; }
   .article_header h1 {
     padding-top: 0;
@@ -569,6 +568,14 @@ article {
     font-size: 1.45em;
     white-space: pre-wrap;
     color: #2c2c2c; }
+    .article_header h2.empty {
+      padding: 0;
+      height: 0;
+      overflow: hidden; }
+      .article_header h2.empty:focus {
+        padding: 10px 20px;
+        height: auto;
+        overflow: auto; }
 
 .text_content {
   padding: 10px 20px;
