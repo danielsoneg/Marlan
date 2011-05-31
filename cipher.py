@@ -32,17 +32,17 @@ class Cipher(object):
         return cryptinfo
     
     def decryptInfo(self, key, cryptinfo):
-        logging.info('got as key: %s' % key)
-        logging.info('got as crypto: %s' % cryptinfo)
+        #logging.info('got as key: %s' % key)
+        #logging.info('got as crypto: %s' % cryptinfo)
         cryptinfo = cryptinfo.decode('hex')
         cipher = AES.new(key, AES.MODE_CBC)
         try:
-            logging.info('Trying to decrypt')
+            #logging.info('Trying to decrypt')
             info = cipher.decrypt(cryptinfo)
-            logging.info('Parsing...')
-            logging.info('info = %s' % info.decode('ascii'))
+            #logging.info('Parsing...')
+            #logging.info('info = %s' % info.decode('ascii'))
             info = json.loads(info)
-            logging.info('parsed - info = %s' % info)
+            #logging.info('parsed - info = %s' % info)
             return info
         except:
             return False

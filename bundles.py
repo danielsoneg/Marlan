@@ -11,17 +11,18 @@ except ImportError: import json
 debug = False
 class fakelog(object):
     def info(self,arg): pass
-if not debug: logging = fakelog()
+#if not debug: logging = fakelog()
 
 class Bundles(object):
-    def __init__(self, client):
+    def __init__(self, client, cypher):
         self.client = client
+        self.cypher = cypher
     
     def getPath(self, path):
         """docstring for getPath"""
         path = path.lstrip('/')
         path = "/Public/%s" % path
-        logging.info(path)
+        #logging.info(path)
         resp = self.client.metadata("dropbox", path)
         logging.info("%s , %s" % (resp.data, resp.status))
         if 'is_dir' in resp.data and resp.data['is_dir']:
@@ -35,16 +36,24 @@ class Bundles(object):
             ret['images'] = []
         return (t, ret)
     
-    def writeMetadata(self,path,pw,cypher):
+    def writeMetadata(self,path,pw):
         (t, info) = self.getPath(path)
         meta = dropBoxFile(path,self.client,'.metadata')
-        info = cypher.cryptInfo(pw,info)
+        info = self.cypher.cryptInfo(pw,info)
         meta.write(info)
         return
     
-    def writeContent(self,path,content):
+    def writeContent(self,path,content,pw=False):
+        #logging.info("Writing...")
         info = dropBoxFile(path, self.client, 'info.txt')
-        return info.write(content)
+        status = info.write(content)
+        if pw:
+            logging.info("Hey, a password!")
+            (t, pathInfo) = self.getPath(path)
+            meta = dropBoxFile(path,self.client,'.metadata')
+            pathInfo = self.cypher.cryptInfo(pw,pathInfo)
+            meta.write(pathInfo)
+        return status
     
     def getInfo(self, path):
         info = dropBoxFile(path,self.client,'info.txt')
@@ -94,6 +103,8 @@ class dropBoxFile( object ):
         self.handle.name = self.name
         self.handle.write(self.content.encode('ascii','replace'))
         self.handle.seek(0)
+        #logging.info(self.handle.read())
+        #self.handle.seek(0)
         self.client.put_file('dropbox', self.dir, self.handle)
         self.handle.close()
         self.__addLinks()
@@ -123,6 +134,7 @@ class dropBoxFile( object ):
     def __success(self,message,code={}):
         code['Code'] = 1
         code['Message'] = message
+        #logging.info(code)
         return json.dumps(code)
     
 def linkify(content):

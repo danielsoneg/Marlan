@@ -68,7 +68,9 @@
           <h2 {% if not public %} contenteditable='true' {% end %} tabindex="1"></h2>
         </hgroup>
       </header>
-      <section class="text_content" {% if not public %} contenteditable='true' {% end %} tabindex="1"></section>
+      <section class="text_content" {% if not public %} contenteditable='true' {% end %} tabindex="1">
+        {% if public %}<form><input id='passwordBox' type='text'></input><input type='button' id='passwordGo' value='Go'></input></form>{% end %}
+      </section>
       <p class="reading_time"></p>
     </div>
 
@@ -133,6 +135,6 @@
   <script src="/static/javascripts/plugins/jquery.defaulted.js"></script>
   <script src="/static/javascripts/jquery.application.js"></script>
   {% if public %}<script src='/static/javascripts/jquery.public.js'></script>{% end %}
-
+  {% if not public %}<script src='/static/javascripts/jquery.private.js'></script>{% end %}
 </body>
 </html>

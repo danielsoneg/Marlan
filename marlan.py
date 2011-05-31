@@ -88,19 +88,18 @@ class InfoHandler(BaseHandler):
         logging.info('ASync-Getting ' + path)
         tpath = '/'.join([urllib.quote(p) for p in path.rstrip('/').split('/')])
         if re.match(r'u\d{5,6}/', path) != None:
-            logging.info('hey, anon')
             uid = tpath[1:tpath.find('/')]
             tpath = tpath[tpath.find('/')+1:]
             self.public = True
         else:
             uid = self.current_user
             self.public = False
-        logging.info(tpath)
+        #logging.info(tpath)
         url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/info.txt" % {'uid':uid,'path':tpath}
-        logging.info(url)
+        #logging.info(url)
         http = tornado.httpclient.AsyncHTTPClient()
         http.fetch(url, callback=self.on_response)
-
+    
     def on_response(self, response):
         if response.error:
             logging.error(response)
@@ -113,6 +112,7 @@ class InfoHandler(BaseHandler):
             self.write(content)
         logging.info("Finishing...")
         self.finish()
+    
 
 class PublicHandler(BaseHandler):
     def get(self,uid,path):
@@ -138,35 +138,36 @@ class PublicHandler(BaseHandler):
         pw = self.get_argument('pw', default=False)
         logging.info('pw: %s' % pw)
         logging.info('uid: %s' % uid)
-        self.op = path
-        if not pw:
-            logging.info('Not PW')
-            self.write('0')
+        self.op = '/%s/%s' % (uid, path)
+        if pw == 'cookie':
+            pw=self.get_secure_cookie('pw')
+        if not pw or pw is None:
+            raise tornado.web.HTTPError(403)
             self.finish()
         self.p = c.hsh("%s-%s" % (uid, pw))
-        logging.info('self.p: %s' % self.p)
+        #logging.info('self.p: %s' % self.p)
         path = '/'.join([urllib.quote(p) for p in path.rstrip('/').split('/')])
         self.url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/" % {'uid':uid,'path':path}
         url = self.url + '.metadata'
-        logging.info(url)
+        #logging.info(url)
         http = tornado.httpclient.AsyncHTTPClient()
         http.fetch(url, callback=self.on_response)
     
     def on_response(self, response):
         logging.info('gotResponse')
-        logging.info(response.body)
-        logging.info('Key: %s' % self.p)
+        #logging.info(response.body)
+        #logging.info('Key: %s' % self.p)
         md = c.decryptInfo(self.p,response.body)
         if md == False:
             logging.info('No MD')
-            self.write('0')
+            raise tornado.web.HTTPError(403)
         else:
+            #logging.info("Path for Cookie: %s" % self.op)
+            self.set_secure_cookie('pw',self.p,path=self.op,expires_days=60)
             self.write(md)
-            self.set_secure_cookie('pub',self.p,path=self.op)
-        self.finish()
+            self.finish()
         return
     
-
 
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
@@ -181,7 +182,7 @@ class MainHandler(BaseHandler):
         oauth_token = self.Auth.baseToken.from_string(userToken)
         self.dbc = client.DropboxClient(self.Auth.dba.config['server'], self.Auth.dba.config['content_server'], self.Auth.dba.config['port'], self.Auth.dba, oauth_token)
         self.clear_cookie('destpath')
-        self.Bundles = bundles.Bundles(self.dbc)
+        self.Bundles = bundles.Bundles(self.dbc, c)
     
     def get(self,path):
         (t, ret) = self.Bundles.getPath(path)
@@ -219,27 +220,30 @@ class MainHandler(BaseHandler):
             logging.error('Asked for invalid action: %s' % action)
             raise tornado.web.HTTPError(400)
     
-    def post_public(self, path):
+    def post_share(self, path):
         pw = self.get_argument('pw', default=False)
         uid = self.current_user
         p = False
         if pw != False:
             p = c.hsh("%s-%s" % (uid, pw))
-        self.set_secure_cookie('pub',p,path=path)
+            logging.info("Writing metadata")
+            self.Bundles.writeMetadata(path,p)
+        self.set_secure_cookie('share',p,path=path,expires_days=60)
         return json.dumps({'Code':1})
-        
+    
     def post_metadata(self,path):
         logging.info('meta-data-ing')
-        p = self.get_secure_cookie('pub')
+        p = self.get_secure_cookie('share',False)
         if p:
-            self.Bundles.writeMetadata(path,p,c)
+            self.Bundles.writeMetadata(path,p)
             return "1"
         else:
             return "0"
     
     def post_write(self,path):
         content = tornado.escape.xhtml_unescape(self.get_argument('text'))
-        status = self.Bundles.writeContent(path,content)
+        pw = self.get_secure_cookie('share')
+        status = self.Bundles.writeContent(path,content,pw)
         return status
     
     def post_rename(self,path):
@@ -258,7 +262,6 @@ class MainHandler(BaseHandler):
     
 
 def main():
-    
     tornado.options.parse_command_line()
     settings = {
         "static_path": os.path.join(os.path.dirname(__file__), "static"),

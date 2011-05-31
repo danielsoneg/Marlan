@@ -10,64 +10,8 @@ folders = $('.folders', aside);
 images = $('.images', aside);
 files = $('.files', aside);
 
-var _createFolders = function(data,uid) {
-    if (data.folders.length > 0) {
-        var asideContents = "<ol class='folders'>";
-        $.each(data.folders, function(index, value){ 
-            name = value.substring(value.lastIndexOf('/')+1);
-            link = "\n<li><a href='/u"+uid + value + "'>"+name+'</a></li>';
-            asideContents = asideContents + link;
-        });
-        asideContents = asideContents + "\n</ul>";
-        aside.html(asideContents);
-    }
-};
-
-var _createMedia = function(data,uid) {
-    var asideContents = aside.html();
-    if (data.files.length > 0) {
-        asideContents = asideContents + '\n<ul class="files">';
-        $.each(data.files, function(index,value){
-            url = 'http://dl.dropbox.com/u/' + uid + value;
-            name = value.substring(value.lastIndexOf('/')+1);
-            //alert(url);
-            link = '<li><a href="'+ url + '">'+name+'</a></li>\n';
-            asideContents = asideContents + link;
-        });
-        asideContents = asideContents + '\n</ul>';
-    }
-    if (data.images.length > 0) {
-        asideContents = asideContents + '\n<ul class="images">';
-        $.each(data.images, function(index, value){
-            url = 'http://dl.dropbox.com/u/' + uid + value;
-            //alert(url);
-            img = '<li><a href="'+ url + '"><img src="'+url+'"></img></a></li>\n';
-            asideContents = asideContents + img;
-        });
-        asideContents = asideContents + "\n</ul>";
-    }
-    aside.html(asideContents);
-};
-
-var _metadataCallback = function(data) {
-    if (data === 0) {
-        //Incorrect Password Stuff Goes Here
-        alert('Wrong Pass!');
-    }
-    if (data.length > 1) {
-        url = window.location.pathname;
-        var uid = url.substr(2,url.indexOf('/',1)-2);
-        data = jQuery.parseJSON(data);
-        _createFolders(data,uid);
-        _createMedia(data,uid);
-        if ($('body').hasClass('public')) {
-            var url = window.location.pathname +'/info.txt';
-            _getInfo(url);
-        }
-    }        
-};
-
-var _swapContent = function(content) {
+//Need this everywhere
+_swapContent = function(content) {
     var head = "";
     var body = content;
     if (content.indexOf("~~~~") >= 0) {
@@ -84,14 +28,6 @@ var _swapContent = function(content) {
       articleText.addClass('empty');
       } else { 
           articleText.removeClass('empty');
-          if ($('body').hasClass('private')){
-              $.ajax({
-                  type: 'POST',
-                  url: window.location.pathname,
-                  data: 'action=metadata',
-                  success: _metadataCallback
-              });
-          }
     }
     // estimate reading time
     var wordCount = ($('.text_content', article).text().length / 5);
@@ -120,15 +56,6 @@ function pageLandingInteractions(){
         _getInfo(url);
     }
 }
-
-var _passCallback = function(data) {
-    $.ajax({
-        type: 'POST',
-        url: window.location.pathname,
-        data: 'action=metadata',
-        success: _metadataCallback
-    });
-};
 
 var _editCallback = function(data) {
     var data = jQuery.parseJSON(data);
@@ -318,24 +245,6 @@ jQuery(document).ready(function($) {
   $('span', security).click(function(){
     security.toggleClass('active');
     $('body').toggleClass('overlay');
-  });
-  $('#pwgo').click(function(){
-    var pass = '' + $('#pw').val();
-    $.ajax({
-      type: "POST",
-      url: window.location.pathname,
-      data: "pw=" + escape(pass) + "&action=public",
-      success: _passCallback
-    });
-  });
-  $('#pubgo').click(function(){
-      var pass = '' + $('#pw').val();
-      $.ajax({
-          type: 'POST',
-          url: window.location.pathname,
-          data: "pw=" + escape(pass) + '&action=metadata',
-          success: _metadataCallback
-      });
   });
   
   // create page
