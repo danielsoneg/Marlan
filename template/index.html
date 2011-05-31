@@ -28,7 +28,7 @@
   <nav id="primary_nav">
     {% if not public %}
       <div class="password">
-        <span>Password</span>
+        <span>Password</span><!-- Public version of this page: /{{ uid }}{% if paths %}{{ paths[-1] }}{% end %}/{{title}} -->
         <form>
           <label>{% if flist['has_pass'] %}Set {% end %}Password:</label>
           <input id='pw' type='password' value='{% if flist['has_pass'] %}password{% end %}' />
