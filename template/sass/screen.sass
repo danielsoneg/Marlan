@@ -323,7 +323,6 @@ $editable_padding: 10px 20px
     background-image: -webkit-linear-gradient(0deg,transparent,rgba(255,255,255,0.2),transparent)
   h1, h2
     clear: both
-    padding-bottom: .2em
     padding: $editable_padding
   h1
     padding:
@@ -342,6 +341,14 @@ $editable_padding: 10px 20px
     font-size: 1.45em
     white-space: pre-wrap
     color: #2c2c2c
+    &.empty
+      padding: 0
+      height: 0
+      overflow: hidden
+      &:focus
+        padding: $editable_padding
+        height: auto
+        overflow: auto
 
 .text_content
   padding: $editable_padding
