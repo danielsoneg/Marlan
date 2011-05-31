@@ -106,8 +106,7 @@ $('.next:not(.disabled) button', images).click(function(){
     _nextImage();
 });
 $(document).keydown(function(e) {
-  // 'Right Arrow' keypress
-  if (e.keyCode == 39) {
+  if (e.keyCode == 39) {  // 'Right Arrow' keypress
     _nextImage();
   }
 });
@@ -126,8 +125,7 @@ $('.previous:not(.disabled) button', images).click(function(){
   _prevImage();
 });
 $(document).keydown(function(e) {
-  // 'Left Arrow' keypress
-  if (e.keyCode == 37) {
+  if (e.keyCode == 37) {  // 'Left Arrow' keypress
     _prevImage();
   }
 });
@@ -181,8 +179,7 @@ $('.close', images).click(function(e){
   e.preventDefault();
 });
 $(document).keydown(function(e) {
-  // 'Escape' keypress
-  if (e.keyCode == 27) {
+  if (e.keyCode == 27) {  // 'Escape' keypress
     _closeImageInterface();
   }
 });
@@ -203,16 +200,16 @@ jQuery(document).ready(function($) {
     article.css({'left':'0'});
   }
 
-  // paired with a fadeIn above, .hide() prevents a flash on content save
+  // Immediately hide page content so that it can have a pretty .fadeIn on page load (see _swapContent). This .hide goes in doc.ready so it's only hiding-and-fading on page load, instead of every time you make changes to the text.
   contentEditable.hide();
   
   // show Finish Editing button when editing
   contentEditable.focus(function() {
     $('.reading_time', article).hide();
     $(article).prepend('<div class="finish_editing" tabindex="2">Finish Editing</div>');
+    // Finish editing if hit "escape" key
     $(document).keydown(function(e) {
-      // Escape keypress
-      if (e.keyCode == 27) {
+      if (e.keyCode == 27) { // "Escape""
         contentEditable.blur();
       }
     });
