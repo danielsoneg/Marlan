@@ -27,8 +27,8 @@
 
   <nav id="primary_nav">
     {% if not public %}
-      <div class="security">
-        <span>Security</span>
+      <div class="password">
+        <span>Password</span>
         <form>
           <label>{% if flist['has_pass'] %}Set {% end %}Password:</label>
           <input id='pw' type='password' value='{% if flist['has_pass'] %}password{% end %}' />
@@ -134,6 +134,7 @@
   <script src="/static/javascripts/libs/jquery.1.5.2.min.js"></script>
   <script src="/static/javascripts/plugins/jquery.defaulted.js"></script>
   <script src="/static/javascripts/jquery.application.js"></script>
+  <script src="/static/javascripts/jquery.images.js"></script>
   {% if public %}<script src='/static/javascripts/jquery.public.js'></script>{% end %}
   {% if not public %}<script src='/static/javascripts/jquery.private.js'></script>{% end %}
 </body>

@@ -424,24 +424,24 @@ body > nav {
   .create_page button {
     display: none; }
 
-.security {
+.password {
   float: right;
   position: relative;
   z-index: 5;
   width: 30px;
   height: 30px;
   border-left: 1px solid rgba(0, 0, 0, 0.1); }
-  .security span {
+  .password span {
     overflow: hidden;
     text-indent: -9999px;
     display: inline-block;
     width: 30px;
     height: 30px;
     background: url("../images/lock.png") center center no-repeat; }
-    .security span:hover, .security span:focus {
+    .password span:hover, .password span:focus {
       background-image: url("../images/lock_hover.png");
       cursor: pointer; }
-  .security form {
+  .password form {
     display: none;
     position: absolute;
     z-index: 2;
@@ -460,7 +460,7 @@ body > nav {
     top: 33px;
     white-space: nowrap;
     width: auto; }
-    .security form:before {
+    .password form:before {
       content: "";
       position: absolute;
       right: 0;
@@ -470,19 +470,19 @@ body > nav {
       border-left: 8px solid transparent;
       border-right: 8px solid transparent;
       border-bottom: 8px solid white; }
-    .security form label {
+    .password form label {
       padding-right: 0.5em; }
-    .security form input {
+    .password form input {
       right: 0;
       width: 140px; }
-      .security form input, .security form input:hover, .security form input:active, .security form input:focus {
+      .password form input, .password form input:hover, .password form input:active, .password form input:focus {
         background: white; }
-    .security form button {
+    .password form button {
       top: 16px;
       right: 10px; }
-  .security.active span {
+  .password.active span {
     background-image: url("../images/lock_active.png"); }
-  .security.active form {
+  .password.active form {
     display: block; }
 
 article {
