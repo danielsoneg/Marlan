@@ -58,9 +58,9 @@ function pageLandingInteractions(){
 }
 
 var _editCallback = function(data) {
-    var data = jQuery.parseJSON(data);
-    if (data.Code == 1) {
-        _swapContent(data.Message);
+    var editCallbackData = jQuery.parseJSON(data);
+    if (editCallbackData.Code === 1) {
+        _swapContent(editCallbackData.Message);
     }
 };
 
