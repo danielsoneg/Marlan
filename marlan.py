@@ -46,7 +46,7 @@ class dbAuth(object):
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
-        return self.get_secure_cookie("user")
+        return self.get_cookie("user")
 
 class LoginHandler(BaseHandler):    
     """docstring for LoginHandler"""
@@ -63,7 +63,7 @@ class LoginHandler(BaseHandler):
         userToken = self.Auth.dba.obtain_request_token()
         tokens[userToken.key] = userToken.to_string()
         sentpath = self.get_argument('next','/')
-        self.set_secure_cookie('destpath',tornado.escape.url_escape(sentpath)) 
+        self.set_cookie('destpath',tornado.escape.url_escape(sentpath)) 
         userAuthURL= self.Auth.dba.build_authorize_url(userToken,'http://%s%s' %(self.request.headers['Host'],self.get_login_url()))
         self.redirect(userAuthURL)
         pass
@@ -76,9 +76,9 @@ class LoginHandler(BaseHandler):
         dbc = client.DropboxClient(self.Auth.dba.config['server'], self.Auth.dba.config['content_server'], self.Auth.dba.config['port'], self.Auth.dba, oauth_token)
         email = dbc.account_info().data['email']
         Users.addUser(uid,oauth_token,email)
-        self.set_secure_cookie("user", uid)
-        dest = tornado.escape.url_unescape(self.get_secure_cookie('destpath'))
-        self.set_secure_cookie('destpath','')
+        self.set_cookie("user", uid)
+        dest = tornado.escape.url_unescape(self.get_cookie('destpath'))
+        self.set_cookie('destpath','')
         self.redirect(dest)
 
 
@@ -116,6 +116,7 @@ class InfoHandler(BaseHandler):
 
 class PublicHandler(BaseHandler):
     def get(self,uid,path):
+        #self.clear_all_cookies()
         title, paths = self.__processPath(path)
         flist = {'folders':[],'files':[],'images':[],'has_info':False}
         self.render("template/index.html", title=title, paths=paths, flist=flist, uid=uid, public=True)
@@ -140,11 +141,14 @@ class PublicHandler(BaseHandler):
         logging.info('uid: %s' % uid)
         self.op = '/%s/%s' % (uid, path)
         if pw == 'cookie':
-            pw=self.get_secure_cookie('pw')
+            pw=self.get_secure_cookie('pw-%s' % self.op.replace('/','-'))
+            logging.info(pw)
+            self.p=pw
+        else:
+            self.p = c.hsh("%s-%s" % (uid, pw))
         if not pw or pw is None:
             raise tornado.web.HTTPError(403)
             self.finish()
-        self.p = c.hsh("%s-%s" % (uid, pw))
         #logging.info('self.p: %s' % self.p)
         path = '/'.join([urllib.quote(p) for p in path.rstrip('/').split('/')])
         self.url = "http://dl.dropbox.com/u/%(uid)s/%(path)s/" % {'uid':uid,'path':path}
@@ -156,14 +160,14 @@ class PublicHandler(BaseHandler):
     def on_response(self, response):
         logging.info('gotResponse')
         #logging.info(response.body)
-        #logging.info('Key: %s' % self.p)
+        logging.info('Key: %s' % self.p)
         md = c.decryptInfo(self.p,response.body)
         if md == False:
             logging.info('No MD')
             raise tornado.web.HTTPError(403)
         else:
             #logging.info("Path for Cookie: %s" % self.op)
-            self.set_secure_cookie('pw',self.p,path=self.op,expires_days=60)
+            self.set_secure_cookie('pw-%s' % self.op.replace('/','-'),self.p,expires_days=60)
             self.write(md)
             self.finish()
         return
@@ -174,14 +178,14 @@ class MainHandler(BaseHandler):
     def prepare(self):
         #logging.info(self.get_login_url())
         if str(self.current_user) not in user_tokens.keys():
-            self.set_secure_cookie("user", '')
+            self.set_cookie("user", '')
             self.redirect("%s?next=%s"% (self.get_login_url(),tornado.escape.url_escape(self.request.full_url())))
             return
         userToken = user_tokens[str(self.current_user)]
         self.Auth = dbAuth()
         oauth_token = self.Auth.baseToken.from_string(userToken)
         self.dbc = client.DropboxClient(self.Auth.dba.config['server'], self.Auth.dba.config['content_server'], self.Auth.dba.config['port'], self.Auth.dba, oauth_token)
-        self.clear_cookie('destpath')
+        if self.get_cookie('destpath',default=False): self.clear_cookie('destpath')
         self.Bundles = bundles.Bundles(self.dbc, c)
     
     def get(self,path):
@@ -226,14 +230,15 @@ class MainHandler(BaseHandler):
         p = False
         if pw != False:
             p = c.hsh("%s-%s" % (uid, pw))
+            logging.info("%s - %s" % (p, path))
+            self.set_secure_cookie('share-%s' % path.replace('/','-'),p,expires_days=60)
             logging.info("Writing metadata")
             self.Bundles.writeMetadata(path,p)
-        self.set_secure_cookie('share',p,path=path,expires_days=60)
         return json.dumps({'Code':1})
     
     def post_metadata(self,path):
         logging.info('meta-data-ing')
-        p = self.get_secure_cookie('share',False)
+        p = self.get_secure_cookie('share-%s' % path.replace('/','-'),False)
         if p:
             self.Bundles.writeMetadata(path,p)
             return "1"
@@ -242,7 +247,7 @@ class MainHandler(BaseHandler):
     
     def post_write(self,path):
         content = tornado.escape.xhtml_unescape(self.get_argument('text'))
-        pw = self.get_secure_cookie('share')
+        pw = self.get_secure_cookie('share-%s' % path.replace('/','-'))
         status = self.Bundles.writeContent(path,content,pw)
         return status
     

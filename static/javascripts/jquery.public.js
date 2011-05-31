@@ -63,7 +63,7 @@ var wrongPass = function(publicData) {
 };
 
 jQuery(document).ready(function($) {
-    if(document.cookie != '' && document.cookie.search('pw\=') != -1) {
+    if(document.cookie != '' && document.cookie.search('pw\-') != -1) {
         $.ajax({
             type: "POST",
             url: window.location.pathname,
