@@ -68,7 +68,7 @@ class Bundles(object):
             elif item['path'].endswith('/.pass'): dirlist['has_pass'] = True
             elif item['path'].endswith('/.metadata'): continue
             elif item['is_dir']: dirlist['folders'].append(path)
-            elif item['mime_type'].startswith('image/'): dirlist['images'].append(path)
+            elif item['mime_type'].startswith('image/') and not item['path'].lower().endswith('.psd'): dirlist['images'].append(path)
             else: dirlist['files'].append(path)
         return dirlist
 
