@@ -13,7 +13,7 @@ var _getInfo = function(url) {
 var _failedContent = function(){alert('Failed to get content!');};
 
 var _createFolders = function(data) {
-    if (data.folders.length > 0) {
+    if (data.folders && data.folders.length > 0) {
         var asideContents = "<ol class='folders'>";
         $.each(data.folders, function(index, value){ 
             name = value.substring(value.lastIndexOf('/')+1);
@@ -27,7 +27,7 @@ var _createFolders = function(data) {
 
 var _createMedia = function(data) {
     var asideContents = aside.html();
-    if (data.files.length > 0) {
+    if (data.files && data.files.length > 0) {
         asideContents = asideContents + '\n<ul class="files">';
         $.each(data.files, function(index,value){
             var url = 'http://dl.dropbox.com/u/' + uid + value;
@@ -38,7 +38,7 @@ var _createMedia = function(data) {
         });
         asideContents = asideContents + '\n</ul>';
     }
-    if (data.images.length > 0) {
+    if (data.images && data.images.length > 0) {
         asideContents = asideContents + '\n<ul class="images">';
         $.each(data.images, function(index, value){
             var url = 'http://dl.dropbox.com/u/' + uid + value;
