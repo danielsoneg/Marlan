@@ -48,7 +48,11 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         return self.get_cookie("user")
 
-class LoginHandler(BaseHandler):    
+    def encookieatePath(self, p):
+        p = p.replace('/','-').replace(' ','_')
+        return p
+
+class LoginHandler(BaseHandler):
     """docstring for LoginHandler"""
     def prepare(self):
         self.Auth = dbAuth()
@@ -58,7 +62,7 @@ class LoginHandler(BaseHandler):
             self.setAccess()
         else:
             self.getAccess()
-        
+    
     def getAccess(self):
         userToken = self.Auth.dba.obtain_request_token()
         tokens[userToken.key] = userToken.to_string()
@@ -80,6 +84,7 @@ class LoginHandler(BaseHandler):
         dest = tornado.escape.url_unescape(self.get_cookie('destpath'))
         self.set_cookie('destpath','')
         self.redirect(dest)
+    
 
 
 class InfoHandler(BaseHandler):
@@ -117,12 +122,12 @@ class InfoHandler(BaseHandler):
 class PublicHandler(BaseHandler):
     def get(self,uid,path):
         #self.clear_all_cookies()
-        title, paths = self.__processPath(path)
+        title, paths = self.__processPath(path,uid)
         flist = {'folders':[],'files':[],'images':[],'has_info':False}
         self.render("template/index.html", title=title, paths=paths, flist=flist, uid=uid, public=True)
     
-    def __processPath(self, path):
-        longp = ""
+    def __processPath(self, path,uid):
+        longp = "/u%s" % uid
         path = path.rstrip('/')
         if path == '': return 'Index',[]
         pathlist = path.split('/')
@@ -141,7 +146,7 @@ class PublicHandler(BaseHandler):
         logging.info('uid: %s' % uid)
         self.op = '/%s/%s' % (uid, path)
         if pw == 'cookie':
-            pw=self.get_secure_cookie('pw-%s' % self.op.replace('/','-'))
+            pw=self.get_secure_cookie('pw-%s' % self.encookieatePath(self.op))
             logging.info(pw)
             self.p=pw
         else:
@@ -167,7 +172,7 @@ class PublicHandler(BaseHandler):
             raise tornado.web.HTTPError(403)
         else:
             #logging.info("Path for Cookie: %s" % self.op)
-            self.set_secure_cookie('pw-%s' % self.op.replace('/','-'),self.p,expires_days=60)
+            self.set_secure_cookie('pw-%s' % self.encookieatePath(self.op),self.p,expires_days=60)
             self.write(md)
             self.finish()
         return
@@ -231,14 +236,14 @@ class MainHandler(BaseHandler):
         if pw != False:
             p = c.hsh("%s-%s" % (uid, pw))
             logging.info("%s - %s" % (p, path))
-            self.set_secure_cookie('share-%s' % path.replace('/','-'),p,expires_days=60)
+            self.set_secure_cookie('share-%s' % self.encookieatePath(path),p,expires_days=60)
             logging.info("Writing metadata")
             self.Bundles.writeMetadata(path,p)
         return json.dumps({'Code':1})
     
     def post_metadata(self,path):
         logging.info('meta-data-ing')
-        p = self.get_secure_cookie('share-%s' % path.replace('/','-'),False)
+        p = self.get_secure_cookie('share-%s' % self.encookieatePath(path),False)
         if p:
             self.Bundles.writeMetadata(path,p)
             return "1"
@@ -247,7 +252,7 @@ class MainHandler(BaseHandler):
     
     def post_write(self,path):
         content = tornado.escape.xhtml_unescape(self.get_argument('text'))
-        pw = self.get_secure_cookie('share-%s' % path.replace('/','-'))
+        pw = self.get_secure_cookie('share-%s' % self.encookieatePath(path))
         status = self.Bundles.writeContent(path,content,pw)
         return status
     
