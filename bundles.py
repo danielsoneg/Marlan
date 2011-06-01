@@ -65,8 +65,7 @@ class Bundles(object):
             path = item['path']
             path = rePublic.sub('/', path, 1)
             if item['path'].endswith('/info.txt'): dirlist['has_info'] = True
-            elif item['path'].endswith('/.pass'): dirlist['has_pass'] = True
-            elif item['path'].endswith('/.metadata'): continue
+            elif item['path'].endswith('/.metadata'): dirlist['has_pass'] = True
             elif item['is_dir']: dirlist['folders'].append(path)
             elif item['mime_type'].startswith('image/') and not item['path'].lower().endswith('.psd'): dirlist['images'].append(path)
             else: dirlist['files'].append(path)
