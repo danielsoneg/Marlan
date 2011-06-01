@@ -47,10 +47,11 @@ class dbAuth(object):
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         return self.get_cookie("user")
-
+    
     def encookieatePath(self, p):
         p = p.replace('/','-').replace(' ','_')
         return p
+    
 
 class LoginHandler(BaseHandler):
     """docstring for LoginHandler"""
@@ -194,6 +195,7 @@ class MainHandler(BaseHandler):
         self.Bundles = bundles.Bundles(self.dbc, c)
     
     def get(self,path):
+        if path.endswith('/'): self.redirect(path[-1] + path[:-1])
         (t, ret) = self.Bundles.getPath(path)
         getattr(self, 'get_%s' % t)(ret,path)
     
