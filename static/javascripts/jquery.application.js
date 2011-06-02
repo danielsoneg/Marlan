@@ -42,15 +42,18 @@ _swapContent = function(content) {
     } else { 
       articleText.removeClass('empty');
     }
+    
     // estimate reading time
+    var readSpeed = 300;
     var wordCount = ($('.text_content', article).text().length / 5);
-    var minutes = +(wordCount / 200).toFixed(0);
-    var seconds = +(wordCount % 200 / (200/60)).toFixed(0);
+    var minutes = +(wordCount / readSpeed).toFixed(0);
+    var seconds = +(wordCount % readSpeed / (readSpeed/60)).toFixed(0);
     if(minutes >= 1) {
       $('.reading_time', article).html('Estimated reading time: <strong>' + minutes + ' minute(s) ' + seconds + ' seconds.</strong>').fadeIn(articleFadeIn);
     } else {
       $('.reading_time').fadeOut();
     }
+    
     return;
 };
 
