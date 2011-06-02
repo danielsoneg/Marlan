@@ -144,6 +144,8 @@ body > nav
     &:first-child, &:nth-child(2)
       &:before
         display: none
+    &.public
+      margin-left: 10px
   a
     display: inline-block
     &, &:link, &:visited
@@ -198,8 +200,6 @@ body > nav
     padding: 0 .5em
       left: .6em
     @include border_radius(2px)
-.public
-  margin-left: 10px
 .parent
   a
     float: left
@@ -754,6 +754,14 @@ article > aside
     image-rendering: optimizeQuality
     &.fit_size
       max-width: 95%
+
+.public_page article
+  left: 0
+  > aside
+    display: none
+  .content_editable
+    white-space: normal
+    outline: none
 
 //@media screen and (min-width:480px)
 //
