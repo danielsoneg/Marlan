@@ -95,10 +95,31 @@ var _contentEditing = function(){
   contentEditable.focus(function() {
     $('.reading_time', article).hide();
     $(article).prepend('<div class="finish_editing" tabindex="2">Finish Editing</div>');
-    // Finish editing if hit "escape" key
-    $(document).keydown(function(e) {
+    contentEditable.keydown(function(e) {
+      // Finish editing if hit "escape" key
       if (e.keyCode == 27) { // "Escape""
         contentEditable.blur();
+      }
+    });
+    // capture tabs in article edit.
+    articleText.keydown(function(e){  
+      if (e.keyCode == 9) { // "Tab"
+        e.preventDefault();
+
+        var myselection = null;
+        if(document.getSelection) {
+          myselection = document.getSelection();
+        } else if (document.selection) {
+          myselection = document.selection;
+        }
+        var r = myselection.getRangeAt(0);
+        var container = r.startContainer;
+        var text = container.textContent;
+        var start = r.startOffset;
+        var end = r.endOffset;
+        var tabString = "    ";
+        container.textContent = text.substring(0,start)+tabString+text.substring(end);
+        myselection.collapse(container,start+(tabString.length));
       }
     });
   });
