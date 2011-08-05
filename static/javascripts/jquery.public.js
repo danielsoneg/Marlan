@@ -4,6 +4,7 @@ var _getInfo = function(url) {
     $.ajax({
        type: "GET",
        url: url,
+       dataType: 'json',
        success: _swapContent,
        error: _failedContent
     });

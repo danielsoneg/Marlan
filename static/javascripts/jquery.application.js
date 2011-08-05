@@ -12,6 +12,8 @@ files = $('.files', aside);
 
 //Need this everywhere
 _swapContent = function(content) {
+    console.log(content);
+    content = content.content;
     var head = "";
     var body = content;
     if (content.indexOf("~~~~") >= 0) {
@@ -58,13 +60,17 @@ var _getInfo = function(url) {
     $.ajax({
        type: "GET",
        url: url,
+       dataType: 'json',
        success: _swapContent
     });
     return;
 };
 
 function pageLandingInteractions(){
-    var url = window.location.pathname +'/info.txt';
+    var url = window.location.pathname;
+    if (!url.match(".txt$")) {
+        url = url + '/info.txt';
+    }
     if (!$('body').hasClass('public')) {
         _getInfo(url);
     }
