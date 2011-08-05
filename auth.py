@@ -1,13 +1,14 @@
 import tornado.escape
 import base
 from dropbox import auth, client
-from db import SQLite as db
+#from db import SQLite as db
+import os
+pwd = os.path.dirname(os.path.abspath(__file__))
 
-Users = db.userDB() 
 #auth.HTTP_DEBUG_LEVEL=10
 
-config = auth.Authenticator.load_config("config/config.ini")
-config.update(auth.Authenticator.load_config("config/apikeys.ini"))
+config = auth.Authenticator.load_config(os.path.join(pwd,"config/config.ini"))
+config.update(auth.Authenticator.load_config(os.path.join(pwd,"config/apikeys.ini")))
 tokens = {}
 user_tokens = {}
 
@@ -45,7 +46,6 @@ class LoginHandler(base.BaseHandler):
         user_tokens[uid] = oauth_token.to_string()
         dbc = client.DropboxClient(self.Auth.dba.config['server'], self.Auth.dba.config['content_server'], self.Auth.dba.config['port'], self.Auth.dba, oauth_token)
         email = dbc.account_info().data['email']
-        Users.addUser(uid,oauth_token,email)
         self.set_cookie("user", uid)
         dest = tornado.escape.url_unescape(self.get_cookie('destpath'))
         self.set_cookie('destpath','')
