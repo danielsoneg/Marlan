@@ -23,7 +23,7 @@
 
 </head>
 
-<body {% if public %}class='public'{% else %}class='private'{% end %}>
+<body {% if public %}class='public_page'{% else %}class='private'{% end %}>
 
   <nav id="primary_nav">
     {% if not public %}
@@ -65,10 +65,10 @@
       <header class="article_header">
         <hgroup>
           <h1>{{ title }}</h1>
-          <h2 {% if not public %} contenteditable='true' {% end %} tabindex="1"></h2>
+          <h2 class='content_editable' {% if not public %} contenteditable='true' {% end %} tabindex="1"></h2>
         </hgroup>
       </header>
-      <section class="text_content" {% if not public %} contenteditable='true' {% end %} tabindex="1">
+      <section class="text_content content_editable" {% if not public %} contenteditable='true' {% end %} tabindex="1">
         {% if public %}<form><input id='passwordBox' type='text'></input><input type='button' id='passwordGo' value='Go'></input></form>{% end %}
       </section>
       <p class="reading_time"></p>
