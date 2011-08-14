@@ -1,3 +1,1 @@
-Marlan is a simple tool for editing and presenting files in the browser, by Eric Danielson (http://danielsoneg.com) and Harlan Lewis (http://harlanlewis.com).
-
-It's built in Python with Tornado (http://tornadoweb.org), Sass (http://sass-lang.com), jQuery (http://jquery.com), and the Dropbox API (http://dropbox.com/developers).
+This repo has been deprecated. New development is managed at https://github.com/harlanlewis/Marlan.
