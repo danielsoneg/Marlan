@@ -23,7 +23,7 @@ class TextHandler(base.BaseHandler):
         if u'Accept' not in self.request.headers or '/json' not in self.request.headers[u'Accept']:
             flist = {'folders':[],'files':[],'images':[],'has_info':False,'has_pass':False}
             title, paths = self.processPath('%s/%s.txt' % (tpath, filename), uid)
-            self.render("template/index.html", title=title, paths=paths, flist=flist, uid=uid, public=self.public)
+            self.render("template/application.html", title=title, paths=paths, flist=flist, uid=uid, public=self.public)
             self.finish()
         logging.info('ASync-Getting ' + path + ' ' + filename)
         #logging.info(tpath)
@@ -31,7 +31,7 @@ class TextHandler(base.BaseHandler):
         #logging.info(url)
         http = tornado.httpclient.AsyncHTTPClient()
         http.fetch(url, callback=self.on_response)
-    
+
     def on_response(self, response):
         #logging.info(self.request.headers)
         if response.error:
@@ -45,4 +45,4 @@ class TextHandler(base.BaseHandler):
             self.write({'content':content})
         logging.info("Finishing...")
         self.finish()
-    
+

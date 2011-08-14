@@ -9,8 +9,8 @@ class PublicHandler(base.BaseHandler):
         #self.clear_all_cookies()
         title, paths = self.processPath(path,uid)
         flist = {'folders':[],'files':[],'images':[],'has_info':False}
-        self.render("template/index.html", title=title, paths=paths, flist=flist, uid=uid, public=True)
-    
+        self.render("template/application.html", title=title, paths=paths, flist=flist, uid=uid, public=True)
+
     @tornado.web.asynchronous
     def post(self,uid,path):
         logging.info('ASync-Posting ' + path)
@@ -34,7 +34,7 @@ class PublicHandler(base.BaseHandler):
         #logging.info(url)
         http = tornado.httpclient.AsyncHTTPClient()
         http.fetch(url, callback=self.on_response)
-    
+
     def on_response(self, response):
         logging.info('gotResponse')
         #logging.info(response.body)
@@ -49,5 +49,5 @@ class PublicHandler(base.BaseHandler):
             self.write(md)
             self.finish()
         return
-    
+
 
